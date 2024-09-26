@@ -1,0 +1,9 @@
+Name: IMEdge
+Version: master
+Description: IMEdge front-end module
+ IMEdge ships a bunch of powerful components for your Open Source Monitoring
+ environment. As in Edge Computing best practices, this brings processing
+ closer to the data source.
+
+ Currently, this module allows to control local and remote IMEdge nodes,
+ is proxying graph requests, and provides access to our inventory database.
