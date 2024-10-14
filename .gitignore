@@ -3,3 +3,6 @@
 .*.sw[op]
 composer.lock
 /tests/.phpunit*
+public/css/combined.less
+public/js/combined.js
+public/img/vendor
