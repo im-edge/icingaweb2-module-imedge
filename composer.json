@@ -29,6 +29,7 @@
         "ext-zlib": "*",
         "imedge/rrdgraph": ">=0.3",
         "imedge/rrd-graph-info": ">=0.3",
+        "imedge/web-flags": "@dev",
         "imedge/web-grapher": "@dev",
         "imedge/web-select2": "@dev"
     },
