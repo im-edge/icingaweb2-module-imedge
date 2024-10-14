@@ -7,3 +7,5 @@ use Icinga\Module\Imedge\Web\StyleSheetExtender;
 if (StyleSheetExtender::extendIcingaWeb(__DIR__)) {
     return;
 }
+
+require_once __DIR__ . '/vendor/autoload.php';
