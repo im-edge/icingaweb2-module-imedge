@@ -15,14 +15,22 @@
             "php": "7.4.20"
         }
     },
+    "scripts": {
+        "post-update-cmd": [
+            "bin/refresh-public.sh"
+        ]
+    },
     "require": {
         "php": ">=7.4",
         "ext-dom": "*",
         "ext-gd": "*",
         "ext-json": "*",
+        "ext-pdo": "*",
         "ext-zlib": "*",
         "imedge/rrdgraph": ">=0.3",
-        "imedge/rrd-graph-info": ">=0.3"
+        "imedge/rrd-graph-info": ">=0.3",
+        "imedge/web-grapher": "@dev",
+        "imedge/web-select2": "@dev"
     },
     "require-dev": {
         "phpstan/phpstan": "^1.4",
