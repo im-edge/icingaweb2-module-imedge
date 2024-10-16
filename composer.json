@@ -24,6 +24,7 @@
         "php": ">=7.4",
         "ext-dom": "*",
         "ext-gd": "*",
+        "ext-intl": "*",
         "ext-json": "*",
         "ext-pdo": "*",
         "ext-zlib": "*",
@@ -35,6 +36,7 @@
         "imedge/web-flags": "@dev",
         "imedge/web-grapher": "@dev",
         "imedge/web-rpc": "@dev",
+        "imedge/web-rpc-inspection": "@dev",
         "imedge/web-select2": "@dev"
     },
     "require-dev": {

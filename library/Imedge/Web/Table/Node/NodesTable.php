@@ -1,6 +1,6 @@
 <?php
 
-namespace Icinga\Module\Imedge\Web\Table;
+namespace Icinga\Module\Imedge\Web\Table\Node;
 
 use gipfl\Format\LocalDateFormat;
 use gipfl\Format\LocalTimeFormat;

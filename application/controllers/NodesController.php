@@ -6,7 +6,7 @@ use gipfl\IcingaWeb2\CompatController;
 use gipfl\IcingaWeb2\Link;
 use gipfl\Web\Widget\Hint;
 use Icinga\Module\Imedge\Config\Defaults;
-use Icinga\Module\Imedge\Web\Table\NodesTable;
+use Icinga\Module\Imedge\Web\Table\Node\NodesTable;
 use IMEdge\Web\Rpc\IMEdgeClient;
 use ipl\Html\Html;
 use React\EventLoop\Loop;
