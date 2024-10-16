@@ -53,7 +53,7 @@ class ImportCommand extends Command
     {
         // Hint: Code is not asynchronous, log lines will appear once everything has been completed
         $logger = new Logger();
-        $logger->addWgit riter(new WritableStreamWriter(new WritableResourceStream(STDOUT)));
+        $logger->addWriter(new WritableStreamWriter(new WritableResourceStream(STDOUT)));
         $import = new AutonomousSystemImporter($this->db(), $logger);
         $import->refreshRegistrations();
     }
