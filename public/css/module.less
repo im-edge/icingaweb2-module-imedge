@@ -3,6 +3,121 @@ p a {
   text-decoration: underline;
 }
 
+/** Dashboard Actions */
+ul.imedge-dashboard-actions {
+  margin: 0;
+  padding: 0;
+  min-width: 38em;
+  max-width: 64em;
+
+  li {
+    list-style-type: none;
+
+    text-align: left;
+    display: inline-block;
+    padding: 0;
+    clear: both;
+    width: 18em;
+    min-width: 16em;
+    vertical-align: top;
+
+    a {
+      i {
+        font-size: 3em;
+        display: block;
+        float: left;
+        line-height: 1em;
+        margin-right: 0.3em;
+      }
+
+      &.state-critical i {
+        color: @color-critical;
+      }
+
+      &.state-warning i {
+        color: @color-warning;
+      }
+
+      &.state-ok i {
+        color: @color-ok;
+      }
+
+      &.state-unknown i {
+        color: @color-unknown;
+      }
+
+      &.state-pending i {
+        color: @color-pending;
+      }
+
+      border-left: 0.5em solid transparent;
+      padding: 1em;
+      color: @text-color;
+      font-weight: bold;
+      display: block;
+      text-decoration: none;
+      min-height: 12em;
+
+      overflow: hidden;
+
+      &.active {
+        color: inherit;
+        border-color: @icinga-blue;
+        background-color: @tr-active-color;
+      }
+
+      &:hover {
+        background-color: @tr-hover-color;
+        text-decoration: none;
+      }
+
+      &:active, &:focus {
+        color: inherit;
+        background-color: @tr-hover-color;
+        outline: none;
+      }
+      &.disabled {
+        color: @gray-light;
+        pointer-events: none;
+        cursor: default;
+        p {
+          color: @gray-light;
+        }
+      }
+    }
+
+    p {
+      font-weight: normal;
+      margin-bottom: 0.5em;
+      padding-left: 4.5em;
+      color: @text-color-light;
+    }
+  }
+}
+
+#layout.compact-layout.twocols ul.imedge-dashboard-actions,
+#layout.minimal-layout ul.imedge-dashboard-actions,
+.gipfl-compact-dashboard ul.imedge-dashboard-actions {
+  max-width: unset;
+  min-width: unset;
+  li {
+    width: 100%;
+    a {
+      height: auto;
+      min-height: unset;
+    }
+    > a > i {
+      font-size: 3em;
+    }
+
+    > a > p {
+      padding-left: 4.5em;
+    }
+    margin-bottom: 0.5em;
+  }
+}
+/** END of dashboard actions */
+
 // NodesTable styling
 table.nodes-table {
   th:first-of-type {
