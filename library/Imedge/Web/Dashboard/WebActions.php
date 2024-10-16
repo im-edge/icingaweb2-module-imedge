@@ -160,7 +160,7 @@ class WebActions
                 'description' => $this->translate('Change stream, as received and applied by Data Nodes'),
                 'table'   => 'input',
                 'listUrl' => 'imedge/history/table-sync',
-                // 'url'     => 'inventory/snmp/credentials',
+                // 'url'     => 'imedge/snmp/credentials',
                 'icon'    => 'history',
             ]),
             'snmpDiscoveryRules' => WebAction::create([
