@@ -1,3 +1,47 @@
+// Links in help texts
 p a {
   text-decoration: underline;
+}
+
+// NodesTable styling
+table.nodes-table {
+  th:first-of-type {
+    min-width: 20%;
+  }
+  td:first-of-type {
+    white-space: nowrap;
+  }
+}
+
+// Introduced by NodesTable
+table.table-with-state {
+  border-collapse: separate;
+  border-spacing: 0 2px;
+  tbody tr {
+    &.state-unknown {
+      --state-color: @color-unknown;
+    }
+    &.state-pending {
+      --state-color: @color-pending;
+    }
+    &.state-warning {
+      --state-color: @color-warning;
+    }
+    &.state-critical {
+      --state-color: @color-critical;
+    }
+    &.state-ok {
+      --state-color: @color-ok;
+    }
+    border-bottom: 1px solid @gray-lightest;
+    td:first-of-type {
+      // border-left: 0.5em solid var(--state-color);
+      box-shadow: inset 0.7em 0 var(--state-color);
+      // border-bottom: 1px solid @gray-lightest;
+      padding-left: 1.5em;
+    }
+    &:hover {
+        box-shadow: 0.1em 0.1em 0.3em @gray-light;
+    }
+  }
 }
