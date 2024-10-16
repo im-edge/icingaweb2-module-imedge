@@ -37,7 +37,8 @@
         "imedge/web-grapher": "@dev",
         "imedge/web-rpc": "@dev",
         "imedge/web-rpc-inspection": "@dev",
-        "imedge/web-select2": "@dev"
+        "imedge/web-select2": "@dev",
+        "imedge/web-url-signing": "@dev"
     },
     "require-dev": {
         "phpstan/phpstan": "^1.4",
