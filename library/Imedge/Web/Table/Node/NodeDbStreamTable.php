@@ -177,7 +177,7 @@ class NodeDbStreamTable extends Table
             $value = self::getPrintableString(hex2bin(substr($value, 2)));
         }
         if ($key === 'uuid' || $key === 'system_uuid' || $key === 'device_uuid') {
-            $value = Link::create($value, 'inventory/snmp/device', [
+            $value = Link::create($value, 'imedge/snmp/device', [
                 'uuid' => $value,
             ]);
         }

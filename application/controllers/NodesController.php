@@ -86,7 +86,7 @@ class NodesController extends CompatController
             $this->content()->add(Hint::info(Html::sprintf(
                 $this->translate('Local %s node (%s) is running, but has not been registered to our Inventory'),
                 Defaults::APPLICATION_NAME,
-                Link::create($label, 'inventory/datanode', [
+                Link::create($label, 'imedge/node', [
                     'uuid' => $identifier->uuid,
                 ], ['data-base-target' => '_next'])
             )));
