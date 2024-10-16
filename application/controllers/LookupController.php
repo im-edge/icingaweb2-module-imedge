@@ -17,7 +17,7 @@ class LookupController extends CompatController
         $this->lookup(Place::class);
     }
 
-    public function datanodeAction()
+    public function nodeAction()
     {
         $this->lookup(DatanodeLookup::class);
     }
