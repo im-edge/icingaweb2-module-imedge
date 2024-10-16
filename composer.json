@@ -28,9 +28,13 @@
         "ext-pdo": "*",
         "ext-zlib": "*",
         "imedge/rrdgraph": ">=0.3",
-        "imedge/rrd-graph-info": ">=0.3",
+        "imedge/rrd-graph-info": ">=0.3.3",
+        "imedge/svg": "@dev",
+        "imedge/web-data": "@dev",
+        "imedge/web-device": "@dev",
         "imedge/web-flags": "@dev",
         "imedge/web-grapher": "@dev",
+        "imedge/web-rpc": "@dev",
         "imedge/web-select2": "@dev"
     },
     "require-dev": {
