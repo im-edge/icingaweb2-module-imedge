@@ -46,7 +46,7 @@ class NodeController extends CompatController
         }
     }
 
-    protected function datanodeTabs(): Tabs
+    protected function nodeTabs(): Tabs
     {
         $urlParams = [
             'uuid' => $this->params->getRequired('uuid')
@@ -72,17 +72,12 @@ class NodeController extends CompatController
         if ($this->nodeInfo === null) {
             return;
         }
-        $this->datanodeTabs()->activate('index');
+        $this->nodeTabs()->activate('index');
         $settings = $this->nodeInfo->settings;
         $this->addTitle(Html::sprintf($this->translate('Monitoring Node: %s'),  $settings->getRequired('name')));
         $this->content()->add([
             Html::tag('h2', $this->translate('Node Settings')),
             new NodeInfoTable($this->nodeInfo->identifier, $settings),
-        ]);
-
-        $this->content()->add([
-            Html::tag('h3', $this->translate('Registered features')),
-            $this->prepareFeaturesTable($this->nodeInfo->features),
         ]);
 
         if (empty($this->nodeInfo->listeners)) {
@@ -102,11 +97,16 @@ class NodeController extends CompatController
                 $this->prepareConnectionsTable((array) $this->nodeInfo->connections),
             ]);
         }
+
+        $this->content()->add([
+            Html::tag('h3', $this->translate('Registered features')),
+            $this->prepareFeaturesTable($this->nodeInfo->features),
+        ]);
     }
 
     public function rpcAction()
     {
-        $this->datanodeTabs()->activate('rpc');
+        $this->nodeTabs()->activate('rpc');
         $settings = $this->nodeInfo->settings;
         $this->addTitle(Html::sprintf($this->translate('Remote Control: %s'),  $settings->getRequired('name')));
         $this->content()->add(new NamespaceInfo($this->nodeInfo->methods, Url::fromPath('imedge/node/method', [
@@ -116,7 +116,7 @@ class NodeController extends CompatController
 
     public function dbStreamAction()
     {
-        $this->datanodeTabs()->activate('dbStream');
+        $this->nodeTabs()->activate('dbStream');
         if ($this->nodeInfo === null) {
             return;
         }
@@ -129,7 +129,7 @@ class NodeController extends CompatController
         if ($this->nodeInfo === null) {
             return;
         }
-        $this->datanodeTabs()->add('method', [
+        $this->nodeTabs()->add('method', [
             'label' => $this->translate('RPC Method'),
             'url'   => $this->url(),
         ])->activate('method');
