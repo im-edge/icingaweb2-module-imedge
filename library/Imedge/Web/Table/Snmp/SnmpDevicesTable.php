@@ -1,6 +1,6 @@
 <?php
 
-namespace Icinga\Module\Imedge\Web\Table\Inventory;
+namespace Icinga\Module\Imedge\Web\Table\Snmp;
 
 use gipfl\IcingaWeb2\Icon;
 use gipfl\IcingaWeb2\Link;
