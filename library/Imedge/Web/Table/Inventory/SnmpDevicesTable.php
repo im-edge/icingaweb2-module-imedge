@@ -27,7 +27,7 @@ class SnmpDevicesTable extends ZfQueryBasedTable
 
     protected function assemble()
     {
-        $this->enableMultiSelect('inventory/snmp/device', 'inventory/devices', ['uuid']);
+        $this->enableMultiSelect('imedge/snmp/device', 'imedge/devices', ['uuid']);
         $this->getAttributes()->add('class', ['one-column-table', 'table-with-state']);
         // $this->deviceLookup = new DeviceShapeLookup();
         $this->ipLookup = new IpToCountryLiteLookup($this->db());
@@ -87,7 +87,7 @@ class SnmpDevicesTable extends ZfQueryBasedTable
             [
                 // $this->getRowIconForState($row->state),
                 DeviceVendor::getVendorLogo($row),
-                Link::create($row->label, 'inventory/snmp/preferred-device-view', [
+                Link::create($row->label, 'imedge/snmp/preferred-device-view', [
                     'uuid' => Uuid::fromBytes($row->uuid)->toString()
                 ], [
                     'style' => 'font-weight: bold;'
