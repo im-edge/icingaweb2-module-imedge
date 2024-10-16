@@ -120,7 +120,7 @@ class NodeController extends CompatController
         if ($this->nodeInfo === null) {
             return;
         }
-        $table = new NodeDbStreamTable($this->client, $this->enumDataNodes());
+        $table = new NodeDbStreamTable($this->client, $this->enumNodes());
         $this->content()->add($table);
     }
 
@@ -193,7 +193,7 @@ class NodeController extends CompatController
         foreach ($connections as $connection) {
             $table->add(Table::row([
                 $connection->state,
-                $connection->peerIdentifier ?? null ? Link::create($connection->peerIdentifier, 'inventory/datanode', [
+                $connection->peerIdentifier ?? null ? Link::create($connection->peerIdentifier, 'imedge/node', [
                     'uuid' => $connection->peerIdentifier
                 ]) : '-',
                 [
@@ -252,7 +252,7 @@ class NodeController extends CompatController
         ];
     }
 
-    protected function enumDataNodes(): array
+    protected function enumNodes(): array
     {
         $db = $this->db();
         $result = [];
