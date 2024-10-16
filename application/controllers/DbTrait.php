@@ -3,7 +3,7 @@
 namespace Icinga\Module\Imedge\Controllers;
 
 use gipfl\IcingaWeb2\Url;
-use gipfl\ZfDb\Adapter\Adapter as ZfDb;
+use gipfl\ZfDb\Adapter\Pdo\PdoAdapter;
 use gipfl\ZfDbStore\ZfDbStore;
 use Icinga\Application\Config;
 use Icinga\Exception\ConfigurationError;
@@ -13,21 +13,21 @@ use Icinga\Module\Imedge\Db\ZfDbConnectionFactory;
 
 trait DbTrait
 {
-    protected static ?ZfDb $db = null;
+    protected static ?PdoAdapter $db = null;
     protected static ?ZfDbStore $dbStore = null;
 
-    protected function db(): ZfDb
+    protected function db(): PdoAdapter
     {
         return self::$db ??= self::newDbConnection();
     }
 
-    private function newDbConnection(): ZfDb
+    private function newDbConnection(): PdoAdapter
     {
         if ($name = Config::module(Defaults::MODULE_NAME)->get('db', 'resource')) {
             $db = ZfDbConnectionFactory::connection(
                 IcingaResource::requireResourceConfig($name, 'db')
             );
-            assert($db instanceof ZfDb);
+            assert($db instanceof PdoAdapter);
         } elseif ($this->isApiRequest()) {
             throw new ConfigurationError(sprintf(
                 'Found no "%s" in the "[%s]" section of %s',
