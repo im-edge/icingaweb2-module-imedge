@@ -2,6 +2,7 @@
 
 namespace Icinga\Module\Imedge\Controllers;
 
+use gipfl\IcingaWeb2\Url;
 use gipfl\ZfDb\Adapter\Adapter as ZfDb;
 use gipfl\ZfDbStore\ZfDbStore;
 use Icinga\Application\Config;
@@ -35,7 +36,7 @@ trait DbTrait
                 Config::module(Defaults::MODULE_NAME)->getConfigFile()
             ));
         } else {
-            $this->redirectToConfigError();
+            $this->redirectToConfigError('db-resource-not-set');
         }
 
         return $db;
@@ -44,9 +45,11 @@ trait DbTrait
     /**
      * @return never-return
      */
-    protected function redirectToConfigError(): void
+    protected function redirectToConfigError(string $errorRef): void
     {
-        exit;
+        $this->redirectNow(Url::fromPath('imedge/configuration', [
+            'error' => $errorRef
+        ]));
     }
 
     protected function dbStore(): ZfDbStore
