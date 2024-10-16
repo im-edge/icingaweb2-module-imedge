@@ -15,7 +15,7 @@ class SitesController extends CompatController
     {
         $this->addInventoryTab();
         $this->addSingleTab($this->translate('Sites'));
-        $this->actions()->add(Link::create($this->translate('Create'), 'inventory/site', [], [
+        $this->actions()->add(Link::create($this->translate('Create'), 'imedge/site', [], [
             'data-base-target' => '_next',
             'class'            => 'icon-plus'
         ]));
