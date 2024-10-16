@@ -445,6 +445,7 @@ class SnmpController extends CompatController
         $this->actions()->add(
             Link::create($this->translate('Add'), 'imedge/snmp/credential', null, [
                 'class' => 'icon-plus',
+                'data-base-target' => '_main'
             ])
         );
         (new CredentialsTable($this->db()))->renderTo($this);
@@ -474,14 +475,14 @@ class SnmpController extends CompatController
 
         $form = (new SnmpCredentialForm($this->dbStore(), $uuid))
             ->on(SnmpCredentialForm::ON_SUCCESS, function (SnmpCredentialForm $form) {
-                $this->redirectNow(Url::fromPath('imedge/snmp/credential', [
-                    'uuid' => $form->getUuid()->toString()
-            ]));
+                $this->redirectNow(
+                    'imedge/snmp/credentials#!imedge/snmp/credential?uuid=' . $form->getUuid()->toString()
+                );
         });
-        if ($form->hasBeenDeleted()) {
-            $this->redirectNow('imedge/snmp/credentials');
-        }
         $this->content()->add($form->handleRequest($this->getServerRequest()));
+        if ($form->hasBeenDeleted()) {
+            $this->redirectNow('imedge/snmp/credentials#!__CLOSE__');
+        }
     }
 
     protected function addDeviceHeader(SnmpAgent $agent, ?SnmpSystemInfo $sysInfo, $title)

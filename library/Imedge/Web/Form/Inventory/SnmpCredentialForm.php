@@ -117,6 +117,15 @@ class SnmpCredentialForm extends UuidObjectForm
         ]);
     }
 
+    protected function getObjectLabel()
+    {
+        if ($this->hasElement('credential_name')) {
+            return $this->getElementValue('credential_name', $this->translate('A new SNMP Credential'));
+        }
+
+        return $this->translate('SNMP Credential');
+    }
+
     public function onSuccess()
     {
         $values = $this->getValues();

@@ -17,6 +17,7 @@ class UuidObjectForm extends Form
 
     protected ?UuidInterface $uuid = null;
     protected bool $deleted = false;
+    protected bool $isNew = false;
    /** @var class-string<UuidObject> */
     protected string $modelClass = 'NEEDS_TO_BE_OVERRIDDEN';
     protected ZfDbStore $store;
@@ -34,6 +35,7 @@ class UuidObjectForm extends Form
             $this->instance = $instance;
             $this->populate($instance->getProperties());
         } else {
+            $this->isNew = true;
             $this->instance = new $this->modelClass;
         }
         $this->keyProperty = $this->instance->getKeyProperty();
@@ -138,13 +140,14 @@ class UuidObjectForm extends Form
         $this->uuid = $this->instance->getUuid(); // Generates a new one, if not set
         $result = $this->store->store($this->instance);
         if ($result === true) {
-            Notification::success(sprintf(
-                $this->translate('%s has been modified'),
-                $this->getObjectLabel()
-            ));
-        } elseif ($result instanceof UuidInterface) {
-            $this->uuid = $result;
-            Notification::success(sprintf($this->translate('%s has been created'), $this->getObjectLabel()));
+            if ($this->isNew) {
+                Notification::success(sprintf($this->translate('%s has been created'), $this->getObjectLabel()));
+            } else {
+                Notification::success(sprintf(
+                    $this->translate('%s has been modified'),
+                    $this->getObjectLabel()
+                ));
+            }
         }
     }
 }
