@@ -7,6 +7,7 @@ use gipfl\IcingaWeb2\Link;
 use gipfl\IcingaWeb2\Url;
 use gipfl\IcingaWeb2\Widget\Tabs;
 use gipfl\Web\Widget\Hint;
+use Icinga\Module\Imedge\Config\Defaults;
 use Icinga\Module\Imedge\Graphing\RrdImageLoader;
 use Icinga\Module\Imedge\NodeControl\TargetShipper;
 use Icinga\Module\Imedge\Web\Cards\SnmpInterfaceCards;
@@ -583,18 +584,18 @@ class SnmpController extends CompatController
             return;
         }
         $url = $url->without(['page', 'limit', 'uuid', self::GOT_PREFERRED_URL_PARAM]);
-        $session = Session::getSession()->getNamespace('inventory');
-        $windowSession = $this->Window()->getSessionNamespace('inventory');
+        $session = Session::getSession()->getNamespace(Defaults::MODULE_NAME);
+        $windowSession = $this->Window()->getSessionNamespace(Defaults::MODULE_NAME);
         $session->set('preferred-device-url', $url->getRelativeUrl());
         $windowSession->set('preferred-device-url', $url->getRelativeUrl());
     }
 
     protected function getPreferredDeviceUrl(): Url
     {
-        $windowSession = $this->Window()->getSessionNamespace('inventory');
+        $windowSession = $this->Window()->getSessionNamespace(Defaults::MODULE_NAME);
         $url = $windowSession->get('preferred-device-url');
         if ($url === null) {
-            $session = Session::getSession()->getNamespace('inventory');
+            $session = Session::getSession()->getNamespace(Defaults::MODULE_NAME);
             $url = $session->get('preferred-device-url');
         }
 
