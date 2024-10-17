@@ -4,6 +4,7 @@ namespace Icinga\Module\Imedge\ProvidedHook\Director;
 
 use Icinga\Module\Director\Hook\ImportSourceHook;
 use Icinga\Module\Director\Web\Form\QuickForm;
+use Icinga\Module\Imedge\Config\Defaults;
 use Icinga\Module\Imedge\Db\DbFactory;
 use IMEdge\Web\Data\Model\SnmpAgent;
 use IMEdge\Web\Data\Model\SnmpSystemInfo;
@@ -13,17 +14,17 @@ class SnmpDeviceImportSource extends ImportSourceHook
 {
     public function getName()
     {
-        return mt('inventory', 'SNMP Devices (with credentials)');
+        return mt(Defaults::MODULE_NAME, 'SNMP Devices (with credentials)');
     }
 
     public static function addSettingsFormFields(QuickForm $form)
     {
         $form->addElement('select', 'lifecycle_uuid', [
-            'label'        => mt('inventory', 'Lifecycle'),
+            'label'        => mt(Defaults::MODULE_NAME, 'Lifecycle'),
             'multiOptions' => self::fetchEnum('system_lifecycle'),
         ]);
         $form->addElement('select', 'environment_uuid', [
-            'label'        => mt('inventory', 'Environment'),
+            'label'        => mt(Defaults::MODULE_NAME, 'Environment'),
             'multiOptions' => self::fetchEnum('system_environment'),
         ]);
     }
@@ -36,7 +37,7 @@ class SnmpDeviceImportSource extends ImportSourceHook
             $values[Uuid::fromBytes($uuid)->toString()] = $label;
         }
 
-        return [null => mt('inventory', '- please choose -')] + $values;
+        return [null => mt(Defaults::MODULE_NAME, '- please choose -')] + $values;
     }
 
     public function fetchData()
