@@ -37,6 +37,8 @@ class SnmpInterfacesTable extends ZfQueryBasedTable
     protected MacAddressBlockLookup $macLookup;
     protected RrdImageLoader $imgLoader;
     protected string $start;
+    protected bool $adminUp = false;
+    protected bool $operUp = false;
 
     public function __construct(Adapter $db, UuidInterface $systemUuid, string $start)
     {
@@ -214,10 +216,20 @@ class SnmpInterfacesTable extends ZfQueryBasedTable
         }
     }
 
+    public function filterAdminUp()
+    {
+        $this->adminUp = true;
+    }
+
+    public function filterOperUp()
+    {
+        $this->operUp = true;
+    }
+
     public function prepareQuery()
     {
         // TODO: if no agent -> join all of them, add columns
-        return $this->db()->select()
+        $query = $this->db()->select()
             ->from(['i' => 'snmp_interface_config'], [
                 'id'                     => 'i.if_index', // wrong, only for NetworkPortInfo
                 'if_status_admin'           => 'i.status_admin',
@@ -261,8 +273,16 @@ class SnmpInterfacesTable extends ZfQueryBasedTable
                 []
             )
             ->where('i.system_uuid = ?', $this->systemUuid->getBytes())
-            ->where('i.status_admin != ?', 'down')
-            ->limit(14)
+            // ->where('i.status_admin != ?', 'down')
+            ->limit(4) // TODO -> available height from client
             ->order('if_index');
+        if ($this->adminUp) {
+            $query->where('i.status_admin = ?', 'up');
+        }
+        if ($this->operUp) {
+            $query->where('s.status_operational = ?', 'up');
+        }
+
+        return $query;
     }
 }

@@ -202,6 +202,22 @@ class SnmpController extends CompatController
 
         if ($renderer === 'table') {
             $table = new SnmpInterfacesTable($this->db(), $device->getUuid(), $this->params->get('start', 'end-25hour'));
+            $this->actions()->add('Admin State: ');
+            $adminState = $this->toggle($this->actions(), 'adminState', [
+                'up' => $this->translate('All States'),
+                'all' => $this->translate('Only UP'),
+            ]);
+            $this->actions()->add('Operational: ');
+            $operState = $this->toggle($this->actions(), 'operState', [
+                'up' => $this->translate('All States'),
+                'all' => $this->translate('Only UP'),
+            ]);
+            if ($adminState === 'up') {
+                $table->filterAdminUp();
+            }
+            if ($operState === 'up') {
+                $table->filterOperUp();
+            }
             if ($table->count() === 0) {
                 $this->content()->add(
                     Hint::info($this->translate('Got no interfaces from this device'))
