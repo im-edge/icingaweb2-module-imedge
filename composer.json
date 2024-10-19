@@ -36,7 +36,7 @@
         "imedge/web-flags": "@dev",
         "imedge/web-grapher": "@dev",
         "imedge/web-rpc": "@dev",
-        "imedge/web-rpc-inspection": "@dev",
+        "imedge/web-rpc-inspection": "^0.4",
         "imedge/web-select2": "@dev",
         "imedge/web-url-signing": "@dev"
     },
