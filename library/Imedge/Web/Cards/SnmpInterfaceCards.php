@@ -78,7 +78,8 @@ class SnmpInterfaceCards extends BaseHtmlElement
         $card = Html::tag('article', ['class' => 'card']);
         // Hint: imgFileName is being used by NetworkPortInfo
         if ($filename = $this->rrdFiles[$row->if_index] ?? null) {
-            $row->imgFileName = null; // ImageLoader::getUrlWithTemplate($filename, $this->template, 640, 480, $this->graphDuration);
+            $row->imgFileName = null;
+            // ImageLoader::getUrlWithTemplate($filename, $this->template, 640, 480, $this->graphDuration);
         } else {
             $row->imgFileName = null;
         }
@@ -132,7 +133,6 @@ class SnmpInterfaceCards extends BaseHtmlElement
                         //$port->setState('critical');
                     }
                     $stateColor = 'state-critical';
-
                 }
                 if ($row->status_oper === 'up') {
                     if ($port) {

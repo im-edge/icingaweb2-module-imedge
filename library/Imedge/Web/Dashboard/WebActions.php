@@ -73,7 +73,9 @@ class WebActions
                 'name'        => 'deviceModels',
                 'singular'    => $this->translate('Device Model'),
                 'plural'      => $this->translate('Device Models'),
-                'description' => $this->translate('Device/Server model specifications: control size, weight and visualization'),
+                'description' => $this->translate(
+                    'Device/Server model specifications: control size, weight and visualization'
+                ),
                 'table'   => 'input',
                 // 'listUrl' => 'imedge/configuration/server-models',
                 'listUrl' => '#',
@@ -105,7 +107,9 @@ class WebActions
                 'name'        => 'datanodes',
                 'singular'    => $this->translate('Monitoring Node'),
                 'plural'      => $this->translate('Monitoring Nodes'),
-                'description' => $this->translate('Local and remote Monitoring Edge Nodes: Schedulers, Monitoring Satellites'),
+                'description' => $this->translate(
+                    'Local and remote Monitoring Edge Nodes: Schedulers, Monitoring Satellites'
+                ),
                 'table'   => 'input',
                 'listUrl' => 'imedge/nodes',
                 'url'     => 'imedge/node',
@@ -115,7 +119,9 @@ class WebActions
                 'name'        => 'snmpDevices',
                 'singular'    => $this->translate('SNMP Device'),
                 'plural'      => $this->translate('SNMP Devices'),
-                'description' => $this->translate('Routers, Switches, Antennas, Servers, Sensors - whatever you\'re monitoring via SNMP'),
+                'description' => $this->translate(
+                    'Routers, Switches, Antennas, Servers, Sensors - whatever you\'re monitoring via SNMP'
+                ),
                 'table'   => 'snmp_agent',
                 'listUrl' => 'imedge/snmp/devices',
                 'url'     => 'imedge/snmp/device',
@@ -147,7 +153,9 @@ class WebActions
                 'name'        => 'snmpcredentials',
                 'singular'    => $this->translate('Credential'),
                 'plural'      => $this->translate('Credentials'),
-                'description' => $this->translate('Credentials: SNMP Community Strings, authentication and encryption keys'),
+                'description' => $this->translate(
+                    'Credentials: SNMP Community Strings, authentication and encryption keys'
+                ),
                 'table'   => 'input',
                 'listUrl' => 'imedge/snmp/credentials',
                 'url'     => 'imedge/snmp/credentials',
@@ -167,7 +175,8 @@ class WebActions
                 'name'        => 'snmpDiscoveryRules',
                 'singular'    => $this->translate('Discovery Rule'),
                 'plural'      => $this->translate('Discovery Rules'),
-                'description' => $this->translate('Define Discovery Rules, based on Imports (Icinga Director, NeDi, Files) or discovered neighbour devices'),
+                'description' => $this->translate('Define Discovery Rules, based on Imports (Icinga Director, NeDi,'
+                    . ' Files) or discovered neighbour devices'),
                 'table'   => 'snmp_discovery_rule',
                 'listUrl' => 'imedge/discovery/rules',
                 'icon'    => 'sliders',

@@ -43,7 +43,6 @@ use IMEdge\Web\Rpc\IMEdgeClient;
 use ipl\Html\Html;
 use ipl\Html\HtmlDocument;
 use Ramsey\Uuid\Uuid;
-
 use React\EventLoop\Loop;
 
 use function Clue\React\Block\await;
@@ -160,9 +159,12 @@ class SnmpController extends CompatController
             $this->content()->add($form);
             return;
         } else {
-            $this->actions()->add(Link::create($this->translate('Modify'), $this->url()->with('action', 'modify'), null, [
-                'class' => 'icon-edit'
-            ]));
+            $this->actions()->add(Link::create(
+                $this->translate('Modify'),
+                $this->url()->with('action', 'modify'),
+                null,
+                ['class' => 'icon-edit']
+            ));
         }
         $info = $this->getDevice();
         $agent = $this->requireAgent();
@@ -201,7 +203,11 @@ class SnmpController extends CompatController
         $this->actions()->add(new TimeControl($this->url()));
 
         if ($renderer === 'table') {
-            $table = new SnmpInterfacesTable($this->db(), $device->getUuid(), $this->params->get('start', 'end-25hour'));
+            $table = new SnmpInterfacesTable(
+                $this->db(),
+                $device->getUuid(),
+                $this->params->get('start', 'end-25hour')
+            );
             $this->actions()->add('Admin State: ');
             $adminState = $this->toggle($this->actions(), 'adminState', [
                 'up' => $this->translate('All States'),
@@ -242,7 +248,12 @@ class SnmpController extends CompatController
             'up' => $this->translate('All States'),
             'all' => $this->translate('Only UP'),
         ]);
-        $cards = new SnmpInterfaceCards($this->db(), $device->getUuid(), $template, $this->params->get('start', 'end-4hour'));
+        $cards = new SnmpInterfaceCards(
+            $this->db(),
+            $device->getUuid(),
+            $template,
+            $this->params->get('start', 'end-4hour')
+        );
         if ($adminState === 'up') {
             $cards->filterAdminUp();
         }
@@ -424,18 +435,21 @@ class SnmpController extends CompatController
         $ifStatus = NetworkInterfaceStatus::load($this->dbStore(), $dbIdx);
 
         $this->addSingleTab('Interface');
-        $this->addTitle($ifConfig->get('if_name') . ($ifConfig->get('if_alias') ? ': ' . $ifConfig->get('if_alias') : ''));
+        $this->addTitle(
+            $ifConfig->get('if_name') . ($ifConfig->get('if_alias') ? ': ' . $ifConfig->get('if_alias') : '')
+        );
         $this->controls()->add([
             $ifConfig->get('if_description') ? $ifConfig->get('if_description') . ', ' : '',
             $ifConfig->get('status_admin') . '/' . $ifStatus->get('status_operational'),
         ]);
 
         $imgLoader = new RrdImageLoader($this->db());
-        foreach ([
+        $definitions = [
             'if_traffic' => ['if_traffic', $this->translate('Traffic, bits/s'), '32em'],
             'if_packets' => ['if_packets', $this->translate('Packets/s'), '16em'],
-             'if_error'  => ['if_error', $this->translate('Errors/s'), '16em']
-        ] as $measurementName => [$template, $title, $height]) {
+            'if_error'   => ['if_error', $this->translate('Errors/s'), '16em'],
+        ];
+        foreach ($definitions as $measurementName => [$template, $title, $height]) {
             $img = $imgLoader->getDeviceImg($device->getUuid(), $measurementName, $ifIndex, $template);
             if ($img) {
                 // $img->loadImmediately();
@@ -495,7 +509,7 @@ class SnmpController extends CompatController
                 $this->redirectNow(
                     'imedge/snmp/credentials#!imedge/snmp/credential?uuid=' . $form->getUuid()->toString()
                 );
-        });
+            });
         $this->content()->add($form->handleRequest($this->getServerRequest()));
         if ($form->hasBeenDeleted()) {
             $this->redirectNow('imedge/snmp/credentials#!__CLOSE__');
@@ -504,7 +518,9 @@ class SnmpController extends CompatController
 
     protected function addDeviceHeader(SnmpAgent $agent, ?SnmpSystemInfo $sysInfo, $title)
     {
-        $label = $agent->get('label') ?? ($sysInfo ? $sysInfo->get('system_name') : null) ?? inet_ntop($agent->get('ip_address'));
+        $label = $agent->get('label')
+            ?? ($sysInfo ? $sysInfo->get('system_name') : null)
+            ?? inet_ntop($agent->get('ip_address'));
         if ($label === '') {
             $label = inet_ntop($agent->get('ip_address'));
         }

@@ -109,7 +109,6 @@ class SnmpInterfacesTable extends ZfQueryBasedTable
                         //$port->setState('critical');
                     }
                     $stateColor = 'state-critical';
-
                 }
                 if ($row->status_oper === 'up') {
                     if ($port) {
@@ -144,7 +143,9 @@ class SnmpInterfacesTable extends ZfQueryBasedTable
             // $row->connector_present,  // TODO: re-read
             // $row->status_duplex,
             [
-                $svg ? Html::tag('div', ['style' => 'float: left; display: inline-block; margin-right: 0.5em'], $svg) : [$this->describeIfType($row->if_type, $stateColor), Html::tag('br')],
+                $svg ? Html::tag('div', [
+                    'style' => 'float: left; display: inline-block; margin-right: 0.5em'
+                ], $svg) : [$this->describeIfType($row->if_type, $stateColor), Html::tag('br')],
                 Link::create($row->if_name, 'imedge/snmp/snmp-interface', [
                     'device_uuid' => Uuid::fromBytes($row->system_uuid)->toString(),
                     'if_index'    => $row->if_index,
@@ -152,8 +153,11 @@ class SnmpInterfacesTable extends ZfQueryBasedTable
                 ]),
                 ($row->if_alias && $row->if_alias !== $row->if_name) ? ' (' . $row->if_alias . ')' : null,
                 [
-                    ($row->entity_description ? [Html::tag('br'), $row->entity_description] :  null),
-                    ($row->physical_address ? [Html::tag('br'), MacAddress::fromBinary($row->physical_address, $this->macLookup)] :  null),
+                    ($row->entity_description ? [Html::tag('br'), $row->entity_description] : null),
+                    ($row->physical_address
+                        ? [Html::tag('br'), MacAddress::fromBinary($row->physical_address, $this->macLookup)]
+                        : null
+                    ),
                     Html::tag('br'),
                     implode(', ', array_filter([
                         'MTU ' . $row->mtu,

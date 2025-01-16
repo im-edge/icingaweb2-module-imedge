@@ -60,7 +60,7 @@ class NodesTable extends ZfQueryBasedTable
             $this->formatStreamPosition($row->db_stream_position, $row->db_stream_error),
         ]);
         if ($row->db_stream_error) {
-           $tr->addAttributes(['class' => 'state-critical']);
+            $tr->addAttributes(['class' => 'state-critical']);
         } else {
             $tr->addAttributes(['class' => 'state-ok']);
         }

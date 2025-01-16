@@ -4,7 +4,7 @@ namespace Icinga\Module\Imedge\Web\Widget\Rpc;
 
 class SysServices
 {
-    const LAYERS = [
+    protected const LAYERS = [
         1 => 'Physical',
         2 => 'Datalink', // bridges
         3 => 'Internet', // routers
@@ -12,7 +12,7 @@ class SysServices
         7 => 'Application', // SMTP ..
     ];
 
-    const BIT_VALUE = [ // 2 ^ (LAYER - 1)
+    protected const BIT_VALUE = [ // 2 ^ (LAYER - 1)
         2 ** 0 => 'Physical',
         2 ** 1 => 'Datalink (Bridge)', // bridges
         2 ** 2 => 'Internet (Router)', // routers

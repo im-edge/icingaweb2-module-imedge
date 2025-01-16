@@ -8,6 +8,7 @@ use gipfl\Web\Form;
 class LiveSnmpScenarioForm extends Form
 {
     use TranslationHelper;
+
     protected $defaultDecoratorClass = null;
     protected $useCsrf = false;
     protected $useFormName = false;

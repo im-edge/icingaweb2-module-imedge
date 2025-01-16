@@ -164,8 +164,10 @@ class ChooseDbResourceForm extends Form
             }
         }
 
-        if ($this->getSubmitLabel() === $this->createDbLabel
-            || $this->getSubmitLabel() === $this->migrateDbLabel) {
+        if (
+            $this->getSubmitLabel() === $this->createDbLabel
+            || $this->getSubmitLabel() === $this->migrateDbLabel
+        ) {
             $this->migrations()->applyPendingMigrations();
         }
     }

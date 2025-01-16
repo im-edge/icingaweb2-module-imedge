@@ -83,8 +83,7 @@ class RrdFileInfoLoader
         $db = $this->db;
         return $db->fetchAll($db->select()->from('rrd_file')
             ->where('device_uuid = ?', $deviceUuid->getBytes())
-            ->where('measurement_name = ?', $measurementName)
-        );
+            ->where('measurement_name = ?', $measurementName));
     }
 
     public function load(UuidInterface $fileUuid): ExtendedRrdInfo
@@ -142,7 +141,12 @@ class RrdFileInfoLoader
         $result = [];
         foreach ($rows as $row) {
             $uuid = Uuid::fromBytes($row->uuid);
-            $ci = new Ci(Uuid::fromBytes($row->device_uuid)->toString(), $row->measurement_name, $row->instance, $row->tags ? JsonString::decode($row->tags) : null);
+            $ci = new Ci(
+                Uuid::fromBytes($row->device_uuid)->toString(),
+                $row->measurement_name,
+                $row->instance,
+                $row->tags ? JsonString::decode($row->tags) : null
+            );
             $info = new ExtendedRrdInfo(
                 $uuid,
                 $row->filename,

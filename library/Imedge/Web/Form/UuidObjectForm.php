@@ -36,7 +36,7 @@ class UuidObjectForm extends Form
             $this->populate($instance->getProperties());
         } else {
             $this->isNew = true;
-            $this->instance = new $this->modelClass;
+            $this->instance = new $this->modelClass();
         }
         $this->keyProperty = $this->instance->getKeyProperty();
     }

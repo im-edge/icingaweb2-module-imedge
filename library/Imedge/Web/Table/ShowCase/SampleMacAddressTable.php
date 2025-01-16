@@ -71,7 +71,10 @@ class SampleMacAddressTable extends Table
             $macAddress = MacAddress::parse($search, $lookup);
             $this->add(Table::row([
                 $macAddress,
-                [$macAddress->description, $macAddress->additionalInfo ? [Html::tag('br'), $macAddress->additionalInfo] : null],
+                [
+                    $macAddress->description,
+                    $macAddress->additionalInfo ? [Html::tag('br'), $macAddress->additionalInfo] : null
+                ],
             ]));
         }
     }

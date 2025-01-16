@@ -45,7 +45,7 @@ class TargetShipper
     protected function getTargetsForDatanode(UuidInterface $datanodeUuid): array
     {
         $db = $this->db;
-        $agents = $db->fetchAll($db->select()->from(['a' => SnmpAgent::TABLE], [
+        $query = $db->select()->from(['a' => SnmpAgent::TABLE], [
             'a.agent_uuid',
             'a.ip_address',
             'a.snmp_port',
@@ -54,19 +54,11 @@ class TargetShipper
             ['lc' => 'system_lifecycle'],
             "lc.uuid = a.lifecycle_uuid AND (lc.enable_monitoring = 'y' OR lc.enable_discovery = 'y')",
             []
-        )
-            ->where('a.datanode_uuid = ?', $datanodeUuid->getBytes())
-/*
-            ->where('a.agent_uuid IN (?)', [
-                Uuid::fromString('72487928-011a-43cc-a0f4-35f16abf311f')->getBytes(),
-                Uuid::fromString('a0616f38-9f68-46eb-8e35-a644f59f9664')->getBytes(),
-                Uuid::fromString('ad5e698a-a3b2-486e-a127-28c0f94cb0d7')->getBytes(),
-                Uuid::fromString('8f337cf8-4753-4729-ad8e-f0e2aac93ad5')->getBytes(),
-            ])
-*/
-            ->order('ip_address')
+        )->where('a.datanode_uuid = ?', $datanodeUuid->getBytes())
+        ->order('ip_address');
         // ->limit(10)
-        );
+        $agents = $db->fetchAll($query);
+
         $targets = [];
         foreach ($agents as $agent) {
             $identifier = Uuid::fromBytes($agent->agent_uuid)->toString();

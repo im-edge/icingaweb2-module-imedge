@@ -74,7 +74,7 @@ class NodeController extends CompatController
         }
         $this->nodeTabs()->activate('index');
         $settings = $this->nodeInfo->settings;
-        $this->addTitle(Html::sprintf($this->translate('Monitoring Node: %s'),  $settings->getRequired('name')));
+        $this->addTitle(Html::sprintf($this->translate('Monitoring Node: %s'), $settings->getRequired('name')));
         $this->content()->add([
             Html::tag('h2', $this->translate('Node Settings')),
             new NodeInfoTable($this->nodeInfo->identifier, $settings),
@@ -108,7 +108,7 @@ class NodeController extends CompatController
     {
         $this->nodeTabs()->activate('rpc');
         $settings = $this->nodeInfo->settings;
-        $this->addTitle(Html::sprintf($this->translate('Remote Control: %s'),  $settings->getRequired('name')));
+        $this->addTitle(Html::sprintf($this->translate('Remote Control: %s'), $settings->getRequired('name')));
         $this->content()->add(new NamespaceInfo($this->nodeInfo->methods, Url::fromPath('imedge/node/method', [
             'uuid' => $this->uuid->toString()
         ])));

@@ -25,7 +25,7 @@ class ConfigurationDashboard extends BaseHtmlElement
     {
         $this->addAttributes([
             'class' => 'action-dashboard',
-            'data-base-target' =>'_main'
+            'data-base-target' => '_main'
         ]);
 
         foreach ($this->webActions->getGroups() as $groupLabel => $actions) {

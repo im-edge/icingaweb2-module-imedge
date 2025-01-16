@@ -62,7 +62,8 @@ class InterfaceDetails extends BaseHtmlElement
             $this->translate('Description') => $if->get('if_description'),
             $this->translate('Alias') => $if->get('if_alias'),
             $this->translate('Index') => $if->get('if_index'),
-            $this->translate('Type') => IanaIfType::describe((int) $if->get('if_type')) . ' (' . $if->get('if_type') . ')',
+            $this->translate('Type') => IanaIfType::describe((int) $if->get('if_type'))
+                . ' (' . $if->get('if_type') . ')',
             $this->translate('Monitor') => $if->get('monitor'),
             $this->translate('Notify') => $if->get('notify'),
         ]);

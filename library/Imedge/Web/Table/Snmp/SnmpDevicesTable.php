@@ -78,7 +78,10 @@ class SnmpDevicesTable extends ZfQueryBasedTable
         /*
         $device = $this->deviceLookup->lookup($row->manufacturer_name, $row->model_name);
         if ($device) {
-            $deviceContainer = Html::tag('span', ['style' => 'display: inline-block; width: 100%; min-width: 16em; max-height: 10em; overflow: hidden; min-height: 3em;'], $device);
+            $deviceContainer = Html::tag('span', [
+                'style' => 'display: inline-block; width: 100%; min-width: 16em; max-height: 10em; overflow: hidden;'
+                    . ' min-height: 3em;'
+            ], $device);
         } else {
             $deviceContainer = null;
         }

@@ -58,11 +58,15 @@ class LiveSoftwareTable extends Table
 
     protected function getTypeName($type)
     {
-        switch($type) {
-            case 1: return 'unknown';
-            case 2: return 'operatingSystem';
-            case 3: return 'deviceDriver';
-            case 4: return 'application';
+        switch ($type) {
+            case 1:
+                return 'unknown';
+            case 2:
+                return 'operatingSystem';
+            case 3:
+                return 'deviceDriver';
+            case 4:
+                return 'application';
             default:
                 return "$type ??";
         }

@@ -104,7 +104,11 @@ class DsInfoTable extends Table
         $graph->timeRange->set($from, $to);
         $graph->dimensions->set($width, $height);
         $graph->layout->disableRrdCached();
-        $image = new RrdImage($graph, 'default', (new IMEdgeClient())->withTarget($this->info->getMetricStoreIdentifier()));
+        $image = new RrdImage(
+            $graph,
+            'default',
+            (new IMEdgeClient())->withTarget($this->info->getMetricStoreIdentifier())
+        );
         $image->loadImmediately();
         $container = new ImedgeGraphPreview($image);
         $container->addAttributes(['style' => sprintf(

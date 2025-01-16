@@ -10,7 +10,7 @@ class SnmpCredentialForm extends UuidObjectForm
 {
     use TranslationHelper;
 
-    const UNCHANGED_PASSWORD = '___UNCHANGED___';
+    protected const UNCHANGED_PASSWORD = '___UNCHANGED___';
     protected string $modelClass = SnmpCredential::class;
     protected $keyProperty = 'credential_uuid';
 

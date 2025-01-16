@@ -105,7 +105,12 @@ class SnmpEntitySensorsTable extends ZfQueryBasedTable
 
     protected function getImage($row, $unit)
     {
-        $image = $this->imageLoader->getDeviceImg($this->systemUuid, 'entity_sensor', $row->entity_index, 'entitySensor');
+        $image = $this->imageLoader->getDeviceImg(
+            $this->systemUuid,
+            'entity_sensor',
+            $row->entity_index,
+            'entitySensor'
+        );
         if (!$image) {
             return null;
         }
@@ -115,9 +120,13 @@ class SnmpEntitySensorsTable extends ZfQueryBasedTable
         $image->graph->getTimeRange()->setStart('now-16hours');
         $image->graph->layout->disableXAxis();
         if ($unit === 'Celsius') {
-            // Hint: doesn't work. We should either generate on-the-fly-templates, or allow to pass transformations via URL
-            // Idea -> pass a palette and/or color offset!?
-            $image->graph->definition = Modifier::replaceInstructionColor($image->graph->definition, 'E6B40C', 'FF000066');
+            // Hint: doesn't work. We should either generate on-the-fly-templates, or allow to pass transformations via
+            //       URL. Idea -> pass a palette and/or color offset!?
+            $image->graph->definition = Modifier::replaceInstructionColor(
+                $image->graph->definition,
+                'E6B40C',
+                'FF000066'
+            );
         }
         $container = new ImedgeGraphPreview($image);
         $container->addAttributes(['style' => 'width: 40em; height: 8em;']);
