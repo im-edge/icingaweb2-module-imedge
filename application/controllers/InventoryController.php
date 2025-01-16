@@ -20,9 +20,11 @@ class InventoryController extends CompatController
 
         /** TODO: other column layout, e.g.: */
         /*$this->content()->add([
-            Html::tag('div', ['class' => 'spalte-links', 'data-base-target' => 'mitte'], new ConfigurationDashboard($actions)),
+            Html::tag('div', [
+                'class' => 'spalte-links',
+                'data-base-target' => 'mitte'
+            ], new ConfigurationDashboard($actions)),
             Html::tag('div', ['class' => ['spalte-mitte', 'container'], 'id' => 'mitte'], 'Mitte')
         ]);*/
-
     }
 }
