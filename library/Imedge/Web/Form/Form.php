@@ -26,5 +26,4 @@ class Form extends gipflForm
             $this->prepend(Hint::error(implode(', ', $errors)));
         }
     }
-
 }
