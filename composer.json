@@ -31,7 +31,7 @@
         "imedge/rrdgraph": "^0.4",
         "imedge/rrd-graph-info": ">=0.3.3",
         "imedge/svg": "^0.2",
-        "imedge/web-data": "^0.7",
+        "imedge/web-data": "^0.8",
         "imedge/web-device": "^0.7",
         "imedge/web-flags": "^0.8",
         "imedge/web-grapher": "^0.7",
