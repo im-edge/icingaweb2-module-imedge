@@ -20,6 +20,7 @@ class NodesTable extends ZfQueryBasedTable
         'label'
     ];
     protected LocalTimeFormat $timeFormatter;
+    protected LocalDateFormat $dateFormatter;
     /** @var object */
     protected $nodeIdentifier;
 
