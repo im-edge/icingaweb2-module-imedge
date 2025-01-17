@@ -30,7 +30,7 @@ rm -rf %{buildroot}
 mkdir -p %{buildroot}
 mkdir -p %{buildroot}%{basedir}
 cd - # ???
-cp -pr  application library configuration.php run.php %{buildroot}%{basedir}/
+cp -pr  application library public vendor configuration.php run.php %{buildroot}%{basedir}/
 
 %clean
 rm -rf %{buildroot}
