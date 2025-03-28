@@ -6,6 +6,7 @@ use gipfl\IcingaWeb2\CompatController;
 use gipfl\IcingaWeb2\Img;
 use gipfl\IcingaWeb2\Link;
 use gipfl\Web\Widget\Hint;
+use Icinga\Module\Imedge\Auth\Permission;
 use Icinga\Module\Imedge\Config\Defaults;
 use Icinga\Module\Imedge\Web\Table\Node\NodesTable;
 use IMEdge\Web\Rpc\IMEdgeClient;
@@ -32,9 +33,11 @@ class IndexController extends CompatController
             ))
         ];
     }
+
     public function indexAction()
     {
         $this->addSingleTab(Defaults::APPLICATION_NAME);
+        $this->assertPermission(Permission::ADMIN);
         $this->addTitle(sprintf($this->translate('Welcome to %s!'), Defaults::APPLICATION_NAME));
         $isAdmin = $this->Auth()->hasPermission('imedge/admin');
         $this->content()->add(Html::tag('div', [

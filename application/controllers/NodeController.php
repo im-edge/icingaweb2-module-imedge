@@ -10,6 +10,7 @@ use gipfl\IcingaWeb2\Url;
 use gipfl\IcingaWeb2\Widget\Tabs;
 use gipfl\Json\JsonString;
 use gipfl\Web\Widget\Hint;
+use Icinga\Module\Imedge\Auth\Permission;
 use Icinga\Module\Imedge\Web\Form\Node\RunRemoteMethodForm;
 use Icinga\Module\Imedge\Web\Table\Node\NodeDbStreamTable;
 use Icinga\Module\Imedge\Web\Table\Node\NodeInfoTable;
@@ -36,6 +37,7 @@ class NodeController extends CompatController
 
     public function init()
     {
+        $this->assertPermission(Permission::ADMIN);
         $this->uuid = Uuid::fromString($this->params->getRequired('uuid'));
         $this->client = (new IMEdgeClient())->withTarget($this->uuid->toString());
         try {

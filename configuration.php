@@ -1,10 +1,11 @@
 <?php
 
 use Icinga\Application\Modules\Module;
+use Icinga\Module\Imedge\Auth\Permission;
 
 /** @var Module $this */
-
 $section = $this->menuSection('IMEdge')
+    ->setPermission(Permission::ADMIN)
     ->setUrl('imedge')
     ->setPriority(80)
     ->setIcon('services');
