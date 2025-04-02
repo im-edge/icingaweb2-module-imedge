@@ -52,7 +52,7 @@ class DiscoveryRuleForm extends UuidObjectForm
             'required' => true,
         ]);
 
-        if ($this->getValue('implementation') === SeedFileNediStyle::class) {
+        if ($this->getValue('implementation')) {
             $instance = $this->createInstance();
             $instance->extendForm($this);
         }
