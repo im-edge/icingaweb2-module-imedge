@@ -231,12 +231,12 @@ SELECT
   SUM(cnt_datasources) AS cnt_datasources,
   SUM(CASE WHEN sa.agent_uuid IS NULL
     AND per_file.device_uuid != per_file.metric_store_uuid
-    AND per_file.device_uuid != per_file.datanode_uuid
+    -- AND per_file.device_uuid != per_file.datanode_uuid
     THEN cnt_datasources ELSE 0 END) AS cnt_datasources_lost,
   ROUND(SUM(rrd_header_size + rrd_data_size)) AS size,
   ROUND(SUM(CASE WHEN sa.agent_uuid IS NULL
     AND per_file.device_uuid != per_file.metric_store_uuid
-    AND per_file.device_uuid != per_file.datanode_uuid
+    -- AND per_file.device_uuid != per_file.datanode_uuid
    THEN rrd_header_size + rrd_data_size ELSE 0 END)) AS size_lost
   FROM (
     SELECT
@@ -272,13 +272,13 @@ SELECT
   SUM(cnt_datasources) AS cnt_datasources,
   SUM(CASE WHEN sa.agent_uuid IS NULL
       AND per_file.device_uuid != per_file.metric_store_uuid
-      AND per_file.device_uuid != per_file.datanode_uuid
+      -- AND per_file.device_uuid != per_file.datanode_uuid
       THEN cnt_datasources ELSE 0 END) AS cnt_datasources_lost,
   ROUND(SUM(rrd_header_size + rrd_data_size)) AS size,
   ROUND(SUM(CASE WHEN
     sa.agent_uuid IS NULL
       AND per_file.device_uuid != per_file.metric_store_uuid
-      AND per_file.device_uuid != per_file.datanode_uuid
+      -- AND per_file.device_uuid != per_file.datanode_uuid
    THEN rrd_header_size + rrd_data_size
    ELSE 0
    END)) AS size_lost
