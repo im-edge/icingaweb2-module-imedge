@@ -4,7 +4,7 @@ namespace Icinga\Module\Imedge\Web\Form\Discovery;
 
 use gipfl\Translation\TranslationHelper;
 use Icinga\Module\Imedge\Discovery\DiscoveryRuleImplementation;
-use Icinga\Module\Imedge\Discovery\NediStyleSeedFile;
+use Icinga\Module\Imedge\Discovery\SeedFileNediStyle;
 use Icinga\Module\Imedge\Web\Form\UuidObjectForm;
 use IMEdge\Config\Settings;
 use IMEdge\Json\JsonString;
@@ -46,13 +46,13 @@ class DiscoveryRuleForm extends UuidObjectForm
             'label' => $this->translate('IP Address Source'),
             'options' => [
                 null => $this->translate('- please choose -'),
-                NediStyleSeedFile::class => $this->translate('Nedi Seed File')
+                SeedFileNediStyle::class => $this->translate('Seed File (NeDi-Style)')
             ],
             'class' => 'autosubmit',
             'required' => true,
         ]);
 
-        if ($this->getValue('implementation') === NediStyleSeedFile::class) {
+        if ($this->getValue('implementation') === SeedFileNediStyle::class) {
             $instance = $this->createInstance();
             $instance->extendForm($this);
         }
