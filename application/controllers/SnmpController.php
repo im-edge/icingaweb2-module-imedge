@@ -122,7 +122,19 @@ class SnmpController extends CompatController
                     'label' => $this->translate('Devices'),
                     'url'   => 'imedge/snmp/devices',
                 ]);
-                $form = new SnmpAgentForm($this->dbStore());
+                $form = new SnmpAgentForm($this->dbStore(), null);
+                if ($nodeUuid = $this->params->get('node')) {
+                    $nodeUuid = Uuid::fromString($nodeUuid);
+                    $form->populate(['datanode_uuid' => $nodeUuid->toString()]);
+                }
+                if ($peer = $this->params->get('peer')) {
+                    [$ip, $port] = explode(':', $peer, 2); // TODO: IPv6
+                    $form->populate([
+                        'ip_address' => $ip,
+                        'snmp_port'  => $port,
+                        'credential_uuid' => $this->params->get('credential'),
+                    ]);
+                }
                 $this->addSingleTab($this->translate('New SNMP Device'));
                 $this->addTitle($this->translate('Add a new SNMP device'));
                 $this->linkBack('imedge/snmp/devices');
