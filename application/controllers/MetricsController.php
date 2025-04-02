@@ -38,6 +38,7 @@ class MetricsController extends CompatController
             . ' to provide fast and persistent Storage for the configured paths.'
         )));
 
+        $this->setAutorefreshInterval(15);
         $sums = $this->fetchSummaries();
         $table = new Table();
         $table->setAttributes([
