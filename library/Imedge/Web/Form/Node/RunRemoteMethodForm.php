@@ -4,6 +4,7 @@ namespace Icinga\Module\Imedge\Web\Form\Node;
 
 use gipfl\Web\Form\Element\Boolean;
 use gipfl\Translation\TranslationHelper;
+use IMEdge\Json\JsonString;
 use IMEdge\Web\Rpc\Inspection\MetaDataMethod;
 use IMEdge\Web\Rpc\Inspection\MetaDataParameter;
 use ipl\Html\FormElement\NumberElement;
@@ -19,6 +20,7 @@ class RunRemoteMethodForm extends Form
     protected string $rpcMethod;
     protected MetaDataMethod $meta;
     protected array $arrayValues = [];
+    protected array $settingsValues = [];
 
     public function __construct(string $rpcMethod, MetaDataMethod $method)
     {
@@ -56,6 +58,9 @@ class RunRemoteMethodForm extends Form
             case 'array':
                 $this->arrayValues[$name] = true;
                 return new TextareaElement($name, $attributes);
+            case '\IMEdge\Config\Settings':
+                $this->settingsValues[$name] = true;
+                return new TextareaElement($name, $attributes);
             case 'int':
                 return new NumberElement($name, $attributes);
             case 'bool':
@@ -76,6 +81,8 @@ class RunRemoteMethodForm extends Form
         foreach ($values as $key => &$value) {
             if (isset($this->arrayValues[$key])) {
                 $value = preg_split('/,\s*/', $value);
+            } elseif (isset($this->settingsValues[$key])) {
+                $value = JsonString::decode($value);
             }
         }
 
