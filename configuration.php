@@ -21,7 +21,7 @@ $section->add(N_('Credentials'))
     ->setUrl('imedge/snmp/credentials')
     ->setPriority(20);
 $section->add(N_('Discovery'))
-    ->setUrl('imedge/discovery/candidates')
+    ->setUrl('imedge/discovery/jobs')
     ->setPriority(30);
 $section->add(N_('Monitoring Nodes'))
     ->setUrl('imedge/nodes')

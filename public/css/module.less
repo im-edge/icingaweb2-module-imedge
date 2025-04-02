@@ -153,6 +153,50 @@ ul.imedge-dashboard-actions {
 }
 /** END of dashboard actions */
 
+
+
+
+table.snmp-scan-results-table {
+  tr.new td {
+    font-weight: bold;
+  }
+}
+table.discovery-jobs-table {
+  td:last-of-type {
+    width: 15em;
+  }
+  td:nth-child(2) {
+    width: 10em;
+    text-align: center;
+  }
+  th:nth-child(2) {
+    width: 10em;
+    text-align: center;
+  }
+  border-collapse: separate;
+  border-spacing: 0 2px;
+  tr.status-running, tr.status-pending {
+    --state-color: @color-warning;
+  }
+  tr.status-finished {
+    --state-color: @color-ok;
+  }
+  tr.status-aborted {
+    --state-color: @color-critical-handled;
+  }
+  tr.status-failing {
+    --state-color: @color-critical;
+  }
+  td:first-of-type {
+    // border-left: 0.5em solid var(--state-color);
+    box-shadow: inset 0.7em 0 var(--state-color);
+    // border-bottom: 1px solid @gray-lightest;
+    padding-left: 1.5em;
+  }
+}
+
+
+
 // NodesTable styling
 table.nodes-table {
   th:first-of-type {

@@ -18,6 +18,7 @@ use function Clue\React\Block\await;
 class IndexController extends CompatController
 {
     use DbTrait;
+    use TabsTraitImedge;
 
     protected function getMainDescription()
     {
@@ -36,8 +37,8 @@ class IndexController extends CompatController
 
     public function indexAction()
     {
-        $this->addSingleTab(Defaults::APPLICATION_NAME);
         $this->assertPermission(Permission::ADMIN);
+        $this->imedgeTabs()->activate('imedge');
         $this->addTitle(sprintf($this->translate('Welcome to %s!'), Defaults::APPLICATION_NAME));
         $isAdmin = $this->Auth()->hasPermission('imedge/admin');
         $this->content()->add(Html::tag('div', [
