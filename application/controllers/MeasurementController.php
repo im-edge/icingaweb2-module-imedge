@@ -86,12 +86,17 @@ class MeasurementController extends CompatController
         $filename = $info->getFilename();
         $rp = ['file' => $filename];
         Benchmark::measure('Fetching essential data');
-        $last = $this->optionallyGetLast($rp, $client);
-        $first = await($client->request('rrd.first', $rp + ['rra' => 0]));
-        $oldest = await($client->request('rrd.first', [
-            'file' => $filename,
-            'rra'  => $info->getRraSet()->getIndexForLongestRra()
-        ]));
+        try {
+            $last = $this->optionallyGetLast($rp, $client);
+            $first = await($client->request('rrd.first', $rp + ['rra' => 0]));
+            $oldest = await($client->request('rrd.first', [
+                'file' => $filename,
+                'rra'  => $info->getRraSet()->getIndexForLongestRra()
+            ]));
+        } catch (\Exception $e) {
+            // Not showing an error, it should already have been triggered
+            $first = $last = $oldest = null;
+        }
         Benchmark::measure('Got basic infos');
         $this->content()->add([
             new FileInfoTable($info, $first, $oldest, $last),
