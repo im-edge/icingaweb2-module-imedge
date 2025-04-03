@@ -48,7 +48,7 @@ class DiscoverResultsTable extends Table
                 $rowClasses[] = 'new';
                 $link = Link::create($result->peer, 'imedge/snmp/device', [
                     'peer'       => $result->peer,
-                    'credential' => '0dfd7755-85fb-4683-8c8a-9790497820ed', // TODO: from remote
+                    'credential' => $result->credential ?? null,
                     'node'       => $nodeUuid->toString(),
                 ]);
             }

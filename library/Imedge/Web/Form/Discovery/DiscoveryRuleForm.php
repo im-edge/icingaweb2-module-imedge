@@ -2,6 +2,7 @@
 
 namespace Icinga\Module\Imedge\Web\Form\Discovery;
 
+use gipfl\IcingaWeb2\Url;
 use gipfl\Translation\TranslationHelper;
 use Icinga\Module\Imedge\Discovery\DiscoveryRuleImplementation;
 use Icinga\Module\Imedge\Discovery\SeedFileNediStyle;
@@ -9,6 +10,8 @@ use Icinga\Module\Imedge\Web\Form\UuidObjectForm;
 use IMEdge\Config\Settings;
 use IMEdge\Json\JsonString;
 use IMEdge\Web\Data\Model\DiscoveryRule;
+use IMEdge\Web\Data\RemoteLookup\SnmpCredentialLookup;
+use IMEdge\Web\Select2\FormElement\SelectRemoteElement;
 
 class DiscoveryRuleForm extends UuidObjectForm
 {
@@ -42,6 +45,13 @@ class DiscoveryRuleForm extends UuidObjectForm
             'required' => true,
             'class' => 'autofocus',
         ]);
+        $this->addElement(new SelectRemoteElement('credential_uuid', [
+            'label'           => $this->translate('SNMP Credential'),
+            'data-lookup-url' => Url::fromPath('imedge/lookup/snmp-credential'),
+            'lookup'          => new SnmpCredentialLookup($this->store->getDb()),
+            'class'           => 'autosubmit',
+            'required'        => true,
+        ]));
         $this->addElement('select', 'implementation', [
             'label' => $this->translate('IP Address Source'),
             'options' => [

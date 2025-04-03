@@ -22,6 +22,7 @@ class TriggerDiscoveryForm extends Form
     protected ZfDbStore $store;
     public ?DiscoveryRuleImplementation $ruleImplementation = null;
     public ?int $jobId = null;
+    protected ?DiscoveryRuleForm $ruleForm = null;
 
     public function __construct(?UuidInterface $nodeUuid, ZfDbStore $store)
     {
@@ -47,13 +48,13 @@ class TriggerDiscoveryForm extends Form
         $ruleUuid = $this->getValue('rule_uuid');
         $nodeUuid = $this->getValue('node_uuid');
         if ($nodeUuid && $ruleUuid) {
-            $ruleForm = new DiscoveryRuleForm($this->store, Uuid::fromString($ruleUuid));
+            $this->ruleForm = $ruleForm = new DiscoveryRuleForm($this->store, Uuid::fromString($ruleUuid));
             $ruleForm->handleRequest($this->getRequest()); // Trigger populate etc
             $this->ruleImplementation = $ruleForm->createInstance();
+            $this->addElement('submit', 'submit', [
+                'label' => $this->translate('Run now')
+            ]);
         }
-        $this->addElement('submit', 'submit', [
-            'label' => $this->translate('Run now')
-        ]);
     }
 
     protected function enum($table, $uuidColumn = 'uuid', $labelColumn = 'label'): array
@@ -71,7 +72,7 @@ class TriggerDiscoveryForm extends Form
     {
         $client = (new IMEdgeClient())->withTarget($this->nodeUuid->toString());
         $this->jobId = await($client->request('snmp.scanRanges', [
-            '0dfd7755-85fb-4683-8c8a-9790497820ed',
+            $this->ruleForm->getValue('credential_uuid'),
             $this->ruleImplementation->getTargetGeneratorClass(),
             $this->ruleImplementation->getSettings()
         ]));
