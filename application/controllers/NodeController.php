@@ -83,7 +83,7 @@ class NodeController extends CompatController
         ]);
 
         if (empty($this->nodeInfo->listeners)) {
-            $this->content()->add(Hint::info($this->translate('Got no active TCP socket listener')));
+            //$this->content()->add(Hint::info($this->translate('Got no active TCP socket listener')));
         } else {
             $this->content()->add([
                 Html::tag('h3', $this->translate('Active Listeners')),
