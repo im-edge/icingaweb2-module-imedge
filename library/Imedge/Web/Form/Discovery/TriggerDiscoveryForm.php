@@ -11,7 +11,6 @@ use IMEdge\Web\Rpc\IMEdgeClient;
 use Ramsey\Uuid\Uuid;
 use Ramsey\Uuid\UuidInterface;
 
-use function Amp\async;
 use function Clue\React\Block\await;
 
 class TriggerDiscoveryForm extends Form
