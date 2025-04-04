@@ -24,7 +24,7 @@ class DiscoveryCommand extends Command
      *
      * USAGE
      *
-     * icingacli imedge discovery candidates --job 'Job Name'
+     * icingacli imedge discovery candidates --rule 'Rule Name'
      */
     public function candidatesAction(): void
     {
@@ -49,7 +49,8 @@ class DiscoveryCommand extends Command
      *
      * USAGE
      *
-     * icingacli imedge discovery run --job 'Job Name' --node imedge.example.com [--auto-inventory] [--verbose]
+     *     icingacli imedge discovery run --rule 'Rule Name' --node imedge.example.com \
+     *         [--auto-inventory] [--verbose] [--environment <name>] [--lifecycle <name>]
      */
     public function runAction(): void
     {
