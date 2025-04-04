@@ -127,6 +127,7 @@ class DiscoveryController extends CompatController
             );
             return;
         }
+        $this->setAutorefreshInterval(5);
         $urlParams = [
             'node' => $nodeUuid->toString(),
         ];
@@ -155,9 +156,17 @@ class DiscoveryController extends CompatController
             return;
         }
         $table = new DiscoveryJobsTable($nodeUuid, $jobs);
+        if ($table->count() > 0) {
+            $this->content()->add(
+                Hint::info($this->translate('Please remove completed Discovery Jobs, once you no longer need them'))
+            );
+        } else {
+            $this->content()->add(
+                Hint::info($this->translate('Discovery Jobs can be triggered on-demand right here or via CLI command'))
+            );
+        }
         $this->content()->add($table);
         $this->setAutorefreshInterval($table->hasRunningJobs() ? 1 : 10);
-        // $this->content()->add(Html::tag('pre', print_r($jobs, 1)));
     }
 
     protected function fetchDiscoveryJobs(UuidInterface $nodeUuid): array
