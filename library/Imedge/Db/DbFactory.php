@@ -16,7 +16,7 @@ class DbFactory
     {
         if (self::$db === null) {
             if ($name = Config::module(Defaults::MODULE_NAME)->get('db', 'resource')) {
-                $db = ZfDbConnectionFactory::class::connection(
+                $db = ZfDbConnectionFactory::connection(
                     IcingaResource::requireResourceConfig($name, 'db')
                 );
                 assert($db instanceof Db);
