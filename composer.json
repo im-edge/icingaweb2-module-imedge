@@ -36,7 +36,7 @@
         "imedge/web-device": "^0.7",
         "imedge/web-flags": "^0.8",
         "imedge/web-grapher": "^0.7",
-        "imedge/web-rpc": "^0.3",
+        "imedge/web-rpc": "^0.4",
         "imedge/web-rpc-inspection": "^0.5",
         "imedge/web-select2": "^0.5",
         "imedge/web-url-signing": "^0.1"
