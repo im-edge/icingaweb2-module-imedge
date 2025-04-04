@@ -156,13 +156,19 @@ class DiscoveryCommand extends Command
         } else {
             $environment = $defaultEnvironment;
         }
-        $agent = (object) [
+        $agent = [
+            'agent_uuid'       => Uuid::uuid4()->getBytes(),
             'credential_uuid'  => Uuid::fromString($result->credential)->getBytes(),
             'datanode_uuid'    => $this->getDataNodeUuid()->getBytes(),
             'lifecycle_uuid'   => $lifecycle->getBytes(),
             'environment_uuid' => $environment->getBytes(),
+            'ip_protocol'      => 'ipv4',
         ];
-        [$agent->ip, $agent->snmp_port] = explode(':', $result->peer); // TODO: IPv6
+        [$ip, $port] = explode(':', $result->peer); // TODO: IPv6
+        $agent['ip_address'] = inet_pton($ip);
+        $agent['snmp_port'] = (int) $port;
+
+        return $db->insert('snmp_agent', $agent) > 0;
     }
 
     protected function getExistingAgentUuid(string $peer): ?UuidInterface
