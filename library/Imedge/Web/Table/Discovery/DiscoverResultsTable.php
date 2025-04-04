@@ -5,6 +5,8 @@ namespace Icinga\Module\Imedge\Web\Table\Discovery;
 use gipfl\IcingaWeb2\Link;
 use gipfl\Translation\TranslationHelper;
 use gipfl\ZfDb\Adapter\Pdo\PdoAdapter;
+use IMEdge\Web\Data\Lookup\IpToCountryLiteLookup;
+use IMEdge\Web\Data\Widget\IpAddress;
 use ipl\Html\Table;
 use Ramsey\Uuid\Uuid;
 use Ramsey\Uuid\UuidInterface;
@@ -31,6 +33,8 @@ class DiscoverResultsTable extends Table
     public function __construct(PdoAdapter $db, UuidInterface $nodeUuid, array $results)
     {
         $this->db = $db;
+        $ipLookup = new IpToCountryLiteLookup($db);
+
         $this->nodeUuid = $nodeUuid;
         uasort($results, fn ($a, $b) => self::sortIdx($a->peer) < self::sortIdx($b->peer) ? -1 : 1);
         $this->getHeader()->add(Table::row([
@@ -40,13 +44,15 @@ class DiscoverResultsTable extends Table
         $body = $this->getBody();
         foreach ($results as $result) {
             $rowClasses = [];
+            [$ip, $port] = explode(':', $result->peer, 2);
+            $label = (new IpAddress(inet_pton($ip), $ipLookup))->add(":$port");
             if ($uuid = $this->getExistingAgentUuid($result->peer)) {
-                $link = Link::create($result->peer, 'imedge/snmp/device', [
+                $link = Link::create($label, 'imedge/snmp/device', [
                     'uuid' => $uuid->toString()
                 ]);
             } else {
                 $rowClasses[] = 'new';
-                $link = Link::create($result->peer, 'imedge/snmp/device', [
+                $link = Link::create($label, 'imedge/snmp/device', [
                     'peer'       => $result->peer,
                     'credential' => $result->credential ?? null,
                     'node'       => $nodeUuid->toString(),
