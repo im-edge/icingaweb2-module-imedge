@@ -16,11 +16,18 @@ class DbFactory
     {
         if (self::$db === null) {
             if ($name = Config::module(Defaults::MODULE_NAME)->get('db', 'resource')) {
-                $db = ZfDbConnectionFactory::connection(
+                if (! is_string($name)) {
+                    throw new ConfigurationError(sprintf(
+                        '"%s" in the "[%s]" section of %s must be a string, got %s',
+                        'resource',
+                        'db',
+                        Config::module(Defaults::MODULE_NAME)->getConfigFile(),
+                        get_debug_type($name)
+                    ));
+                }
+                self::$db = ZfDbConnectionFactory::connection(
                     IcingaResource::requireResourceConfig($name, 'db')
                 );
-                assert($db instanceof Db);
-                self::$db = $db;
             } else {
                 throw new ConfigurationError(sprintf(
                     'Found no "%s" in the "[%s]" section of %s',

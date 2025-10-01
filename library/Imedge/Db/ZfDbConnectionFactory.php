@@ -5,14 +5,15 @@ namespace Icinga\Module\Imedge\Db;
 use DateTime;
 use DateTimeZone;
 use gipfl\DataType\Settings; // TODO: Imedge\Config\Settings?
-use gipfl\ZfDb\Adapter\Adapter;
 use gipfl\ZfDb\Adapter\Pdo\Ibm;
 use gipfl\ZfDb\Adapter\Pdo\Mssql;
 use gipfl\ZfDb\Adapter\Pdo\Mysql;
 use gipfl\ZfDb\Adapter\Pdo\Oci;
+use gipfl\ZfDb\Adapter\Pdo\PdoAdapter;
 use gipfl\ZfDb\Adapter\Pdo\Pgsql;
 use gipfl\ZfDb\Adapter\Pdo\Sqlite;
 use gipfl\ZfDb\Db;
+use Icinga\Exception\ConfigurationError;
 use PDO;
 use RuntimeException;
 
@@ -48,16 +49,12 @@ class ZfDbConnectionFactory
         PDO::ATTR_ERRMODE    => PDO::ERRMODE_EXCEPTION
     ];
 
-    protected static function getDbType(Settings $config)
+    protected static function getDbType(Settings $config): string
     {
         return strtolower($config->get('db', 'mysql'));
     }
 
-    /**
-     * @param Settings $config
-     * @return Adapter
-     */
-    public static function connection(Settings $config)
+    public static function connection(Settings $config): PdoAdapter
     {
         $adapterParams = self::getMainAdapterParams($config);
         $adapter = static::getAdapterClass($config);
@@ -94,7 +91,7 @@ class ZfDbConnectionFactory
         return $db;
     }
 
-    protected static function getMysqlInitCommand(Settings $config)
+    protected static function getMysqlInitCommand(Settings $config): string
     {
         /*
          * Set MySQL server SQL modes to behave as closely as possible to Oracle and PostgreSQL. Note that the
@@ -126,7 +123,10 @@ class ZfDbConnectionFactory
         return $command;
     }
 
-    protected static function getMainAdapterParams(Settings $config)
+    /**
+     * @return array<string,string|int|bool|array<int,int|bool|string>>
+     */
+    protected static function getMainAdapterParams(Settings $config): array
     {
         $generic = ['host', 'username', 'password', 'dbname', 'charset'];
         $params = [
@@ -151,7 +151,11 @@ class ZfDbConnectionFactory
         return $params;
     }
 
-    protected static function getAdapterClass(Settings $config)
+    /**
+     * @param Settings $config
+     * @return class-string<PdoAdapter>
+     */
+    protected static function getAdapterClass(Settings $config): string
     {
         $dbType = static::getDbType($config);
         if (array_key_exists($dbType, self::DB_ADAPTERS)) {
@@ -175,7 +179,7 @@ class ZfDbConnectionFactory
 
     /**
      * @param Settings $config
-     * @return array<string, int|string>
+     * @return array<int, string>
      */
     protected static function getMySqlSslParams(Settings $config): array
     {
@@ -194,8 +198,16 @@ class ZfDbConnectionFactory
 
             foreach ($parameterMap as $key => $option) {
                 $value = $config->get($key);
-                if (strlen($value)) {
-                    $params[$option] = $value;
+                if (is_string($value)) {
+                    if (strlen($value)) {
+                        $params[$option] = $value;
+                    }
+                } else {
+                    throw new ConfigurationError(sprintf(
+                        'String expected for %s, got %s',
+                        $key,
+                        get_debug_type($value)
+                    ));
                 }
             }
         }

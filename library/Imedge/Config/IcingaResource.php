@@ -23,25 +23,29 @@ class IcingaResource
         self::assertResourceExists($name);
         $section = self::getResources()->getSection($name);
         if ($enforcedType !== null && $section->get('type') !== $enforcedType) {
+            $type = $section->get('type');
+            if (! is_string($type)) {
+                $type = get_debug_type($type);
+            }
             throw new InvalidArgumentException(sprintf(
                 "Resource of type '%s' required, but '%s' is '%s'",
                 $enforcedType,
                 $name,
-                $section->get('type')
+                $type
             ));
         }
 
         return Settings::fromSerialization($section->toArray());
     }
 
-    public static function assertResourceExists(string $name)
+    public static function assertResourceExists(string $name): void
     {
         if (! self::getResources()->hasSection($name)) {
             throw new InvalidArgumentException("There is no resource named '$name'");
         }
     }
 
-    public static function forgetConfig()
+    public static function forgetConfig(): void
     {
         self::$resources = null;
     }
