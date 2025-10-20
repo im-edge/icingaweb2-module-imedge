@@ -36,13 +36,13 @@ class LiveSnmpResult extends HtmlDocument
         $timeFormatter = new LocalTimeFormat();
         $dateFormatter = new LocalDateFormat();
         $macLookup = new MacAddressBlockLookup($this->db);
+        if ($this->result->success === false) {
+            $this->add(Hint::error($this->result->errorMessage));
+            return;
+        }
         if ($this->scenarioName === 'softwareInstalled') {
             $table = new LiveSoftwareTable($this->result->result);
         } elseif (in_array($this->scenarioName, ['sysInfo', 'cdpConfig'])) {
-            if ($this->result->success === false) {
-                $this->add(Hint::error($this->result->errorMessage));
-                return;
-            }
             $table = new NameValueTable();
             foreach ($this->result->result as $key => $value) {
                 if ($value->value && in_array($key, ['sysUpTime', 'snmpEngineTime', 'hrSystemUptime'])) {
