@@ -79,10 +79,19 @@ class RunRemoteMethodForm extends Form
     {
         $values = $this->getValues();
         foreach ($values as $key => &$value) {
-            if (isset($this->arrayValues[$key])) {
-                $value = preg_split('/,\s*/', $value);
-            } elseif (isset($this->settingsValues[$key])) {
+            if ($value === null) {
+                continue;
+            }
+            if (isset($this->settingsValues[$key])) {
                 $value = JsonString::decode($value);
+            } elseif (
+                substr($value, 0, 1) === '{'
+                && substr($value, -1, 1) === '}'
+                && $decoded = JsonString::decode($value)
+            ) {
+                $value = $decoded;
+            } elseif (isset($this->arrayValues[$key])) {
+                $value = preg_split('/,\s*/', $value);
             }
         }
 
