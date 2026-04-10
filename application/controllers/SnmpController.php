@@ -409,7 +409,7 @@ class SnmpController extends CompatController
         try {
             $result = await($client->request($request, [
                 'credentialUuid' => Uuid::fromBytes($agent->get('credential_uuid')),
-                'address' => ['ip' => inet_ntop($agent->get('ip_address')), 'port' => $agent->get('snmp_port')],
+                'address' => inet_ntop($agent->get('ip_address')) . ':' . $agent->get('snmp_port'),
                 'name' => $scenarioName,
                 'deviceUuid' => Uuid::fromBytes($agent->get('agent_uuid')),
             ]), Loop::get());
