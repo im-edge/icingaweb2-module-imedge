@@ -40,11 +40,7 @@ abstract class DiscoveryRuleImplementation
         if (! is_a($implementation, DiscoveryRuleImplementation::class, true)) {
             throw new \RuntimeException("$implementation is not a DiscoveryRuleImplementation");
         }
-        $instance = new $implementation($settings);
-        if (!$instance instanceof DiscoveryRuleImplementation) {
-            throw new \RuntimeException("$implementation is not an instance of DiscoveryRuleImplementation");
-        }
 
-        return $instance;
+        return new $implementation($settings);
     }
 }
