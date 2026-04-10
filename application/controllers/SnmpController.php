@@ -3,6 +3,7 @@
 namespace Icinga\Module\Imedge\Controllers;
 
 use Exception;
+use gipfl\DbMigration\Migrations;
 use gipfl\IcingaWeb2\CompatController;
 use gipfl\IcingaWeb2\Link;
 use gipfl\IcingaWeb2\Url;
@@ -630,8 +631,17 @@ class SnmpController extends CompatController
                 $this->dbStore(),
                 Uuid::fromString($this->params->getRequired($param))->getBytes()
             );
-        } catch (\Exception $e) {
+        } catch (Exception $e) {
+            $this->checkSchema();
             return null;
+        }
+    }
+
+    protected function checkSchema(): void
+    {
+        $migrations = new Migrations($this->db(), $this->Module()->getBaseDir() . '/schema');
+        if (! $migrations->hasSchema()) {
+            $this->redirectToConfigError('db-missing-schema');
         }
     }
 
@@ -705,9 +715,14 @@ class SnmpController extends CompatController
 
     protected function requireAgent(string $param = 'uuid'): SnmpAgent
     {
-        return $this->agent ??= SnmpAgent::load(
-            $this->dbStore(),
-            Uuid::fromString($this->params->getRequired($param))->getBytes()
-        );
+        try {
+            return $this->agent ??= SnmpAgent::load(
+                $this->dbStore(),
+                Uuid::fromString($this->params->getRequired($param))->getBytes()
+            );
+        } catch (Exception $e) {
+            $this->checkSchema();
+            throw $e;
+        }
     }
 }
