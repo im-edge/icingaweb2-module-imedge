@@ -32,19 +32,28 @@
         "imedge/rrd-graph-info": ">=0.3.3",
         "imedge/rrdgraph": ">=0.4",
         "imedge/svg": ">=0.2",
-        "imedge/web-data": ">=0.11",
-        "imedge/web-device": ">=0.7",
+        "imedge/web-data": ">=0.13",
+        "imedge/web-device": ">=0.7.4",
         "imedge/web-flags": ">=0.8",
         "imedge/web-grapher": ">=0.7",
         "imedge/web-rpc": ">=0.4",
         "imedge/web-rpc-inspection": ">=0.5",
-        "imedge/web-select2": ">=0.5",
+        "imedge/web-select2": ">=0.6",
         "imedge/web-url-signing": ">=0.1"
     },
     "require-dev": {
-        "phpstan/phpstan": "^1.4",
+        "clue/block-react": "^1.5",
+        "gipfl/data-type": "^0.4.0",
+        "gipfl/icingaweb2": "^0.11.0",
+        "gipfl/web": "^0.14.0",
+        "gipfl/zfdb": "^0.5.0",
+        "gipfl/zfdbstore": "^0.4.0",
+        "ipl/html": "^0.8.2",
+        "phpstan/phpstan": "^1.4 || ^2.1",
         "phpunit/phpunit": "^10 || ^9.5",
-        "squizlabs/php_codesniffer": "^3.6",
+        "ramsey/uuid": "^4.2",
+        "react/promise": "^3.3",
+        "squizlabs/php_codesniffer": "^3.6 || ^4.0",
         "symplify/easy-coding-standard": "^12"
     }
 }
