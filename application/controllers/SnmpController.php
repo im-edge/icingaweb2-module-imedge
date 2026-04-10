@@ -9,6 +9,7 @@ use gipfl\IcingaWeb2\Link;
 use gipfl\IcingaWeb2\Url;
 use gipfl\IcingaWeb2\Widget\Tabs;
 use gipfl\Web\Widget\Hint;
+use gipfl\ZfDbStore\NotFoundError;
 use Icinga\Module\Imedge\Config\Defaults;
 use Icinga\Module\Imedge\Graphing\RrdImageLoader;
 use Icinga\Module\Imedge\Web\Cards\SnmpInterfaceCards;
