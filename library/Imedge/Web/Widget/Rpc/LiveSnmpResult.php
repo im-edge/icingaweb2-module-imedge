@@ -7,6 +7,7 @@ use gipfl\Format\LocalTimeFormat;
 use gipfl\Web\Table\NameValueTable;
 use gipfl\Web\Widget\Hint;
 use gipfl\ZfDb\Adapter\Adapter;
+use Icinga\Module\Imedge\Snmp\VarBindList;
 use IMEdge\Web\Data\Lookup\AutonomousSystemLookup;
 use IMEdge\Web\Data\Lookup\MacAddressBlockLookup;
 use IMEdge\Web\Data\Widget\AutonomousSystem;
@@ -41,10 +42,17 @@ class LiveSnmpResult extends HtmlDocument
             return;
         }
         if ($this->scenarioName === 'softwareInstalled') {
-            $table = new LiveSoftwareTable($this->result->result);
+            throw new \RuntimeException('Not yet');
+            $table = new LiveSoftwareTable($this->result->nonRepeaters);
         } elseif (in_array($this->scenarioName, ['sysInfo', 'cdpConfig'])) {
             $table = new NameValueTable();
-            foreach ($this->result->result as $key => $value) {
+
+            // result->result also has errorStatus=0 and errorIndex=0
+            // result->duration -> 23543985
+            $varBinds = VarBindList::fromSerialization($this->result->result->varBinds);
+            foreach ($varBinds->varBinds as $varBind) {
+                /*
+                // TODO: this predates VarBindList
                 if ($value->value && in_array($key, ['sysUpTime', 'snmpEngineTime', 'hrSystemUptime'])) {
                     if ($value->type === 'time_ticks') {
                         $timestamp = SnmpUptime::getDateTime($value->value / 100)->getTimestamp();
@@ -60,17 +68,13 @@ class LiveSnmpResult extends HtmlDocument
                 if ($key === 'sysServices' && is_int($value)) {
                     $value = implode(', ', SysServices::getList($value)) . " ($value)";
                 }
-                if (is_scalar($value)) {
-                    $table->addNameValueRow($key, new HtmlString(
-                        nl2br((new Text($value))->render())
-                    ));
-                } else {
-                    $table->addNameValueRow($key, new HtmlString(
-                        nl2br((new Text(var_export($value, 1)))->render())
-                    ));
-                }
+                */
+                $table->addNameValueRow($varBind->oid, new HtmlString(
+                    nl2br((new Text($varBind->value->getReadableValue()))->render())
+                ));
             }
         } else {
+            throw new \RuntimeException('Not yet');
             $table = new Table();
             $knownHeaders = [];
             foreach ($this->result->result as $row) {
