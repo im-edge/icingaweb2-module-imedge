@@ -25,6 +25,7 @@ class DiscoveryJobsTable extends Table
     protected bool $hasRunningJobs = false;
     protected UuidInterface $nodeUuid;
     protected LocalTimeFormat $timeFormatter;
+    protected LocalDateFormat $dateFormatter;
 
     public function __construct(UuidInterface $nodeUuid, array $jobs)
     {
