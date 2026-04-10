@@ -3,8 +3,10 @@
 namespace Icinga\Module\Imedge\Web\Form\Inventory;
 
 use gipfl\Translation\TranslationHelper;
+use gipfl\Web\Widget\Hint;
 use Icinga\Module\Imedge\Web\Form\UuidObjectForm;
 use IMEdge\Web\Data\Model\SnmpCredential;
+use ipl\Html\Html;
 
 class SnmpCredentialForm extends UuidObjectForm
 {
@@ -46,6 +48,7 @@ class SnmpCredentialForm extends UuidObjectForm
             ]);
             return;
         }
+
         // TODO: 32 character limit for the username!
         $this->addElement('text', 'security_name', [
             'label' => $this->translate('Security name'),
@@ -64,18 +67,47 @@ class SnmpCredentialForm extends UuidObjectForm
             // Requires getValues()-cleanup
             return;
         }
+        $this->add(Hint::info([
+            Html::tag('strong', $this->translate('Available Authentication Methods')),
+            Html::tag('ul', [
+                Html::tag('li', Html::sprintf('MD5: required in %s', Html::tag('a', [
+                    'href' => 'https://datatracker.ietf.org/doc/html/rfc3414',
+                    'target' => '_blank'
+                ], 'RFC 3414'))),
+                Html::tag('li', Html::sprintf('SHA (SHA1): optional in %s', Html::tag('a', [
+                    'href' => 'https://datatracker.ietf.org/doc/html/rfc3414',
+                    'target' => '_blank'
+                ], 'RFC 3414'))),
+                Html::tag('li', Html::sprintf('SHA-224: optional in %s with 128bit HMAC', Html::tag('a', [
+                    'href' => 'https://datatracker.ietf.org/doc/html/rfc7860',
+                    'target' => '_blank'
+                ], 'RFC 7860'))),
+                Html::tag('li', Html::sprintf('SHA-256: required in %s with 192bit HMAC', Html::tag('a', [
+                    'href' => 'https://datatracker.ietf.org/doc/html/rfc7860',
+                    'target' => '_blank'
+                ], 'RFC 7860'))),
+                Html::tag('li', Html::sprintf('SHA-384: optional in %s with 256bit HMAC', Html::tag('a', [
+                    'href' => 'https://datatracker.ietf.org/doc/html/rfc7860',
+                    'target' => '_blank'
+                ], 'RFC 7860'))),
+                Html::tag('li', Html::sprintf('SHA-512: suggested in %s with 384bit HMAC', Html::tag('a', [
+                    'href' => 'https://datatracker.ietf.org/doc/html/rfc7860',
+                    'target' => '_blank'
+                ], 'RFC 7860'))),
+            ]),
+        ]));
 
         $this->addElement('select', 'auth_protocol', [
             'label'        => $this->translate('Authentication protocol'),
             'required'     => true,
             'multiOptions' => [
                 null  => t('- Please choose -'),
-                'md5'    => 'MD5 (RFC 3414, required)',
-                'sha1'   => 'SHA-1 (RFC 3414, optional)',
-                'sha224' => 'SHA-224 (RFC 7860)',
-                'sha256' => 'SHA-256 (RFC 7860)',
-                'sha384' => 'SHA-384 (RFC 7860)',
-                'sha512' => 'SHA-512 (RFC 7860)',
+                'md5'    => $this->translate('MD5 (required in RFC 3414)'),
+                'sha1'   => $this->translate('SHA-1 (optional RFC 3414)'),
+                'sha224' => $this->translate('SHA-224 (optional in RFC 7860)'),
+                'sha256' => $this->translate('SHA-256 (required in RFC 7860)'),
+                'sha384' => $this->translate('SHA-384 (optional in RFC 7860)'),
+                'sha512' => $this->translate('SHA-512 (suggested RFC 7860)'),
             ],
         ]);
         $this->addElement('password', 'auth_key', [
@@ -95,16 +127,63 @@ class SnmpCredentialForm extends UuidObjectForm
         if ($this->getValue('use_priv') !== 'y') {
             return;
         }
+        $this->add(Hint::info([
+            Html::tag('strong', $this->translate('Available Privacy / Encryption Methods')),
+            Html::tag('ul', [
+                Html::tag('li', Html::sprintf($this->translate('DES: in CBC mode, defined in %s'), Html::tag('a', [
+                    'href' => 'https://datatracker.ietf.org/doc/html/rfc3414',
+                    'target' => '_blank'
+                ], 'RFC 3414'))),
+                Html::tag('li', Html::sprintf($this->translate(
+                    '3-DES: Triple-DES EDE in "Outside" CBC mode, mostly used by Cisco, defined in %s'
+                ), Html::tag('a', [
+                    'href' => 'https://datatracker.ietf.org/doc/html/draft-reeder-snmpv3-usm-3desede-00',
+                    'target' => '_blank'
+                ], 'draft-reeder-snmpv3-usm-3desede-00'))),
+                Html::tag('li', Html::sprintf($this->translate(
+                    'AES-128: CFB mode, required in %s with "Blumenthal" Key localization'
+                ), Html::tag('a', [
+                    'href' => 'https://datatracker.ietf.org/doc/html/rfc3826',
+                    'target' => '_blank'
+                ], 'RFC 3826'))),
+                Html::tag('li', Html::sprintf($this->translate(
+                    'AES-192: CFB mode, as of %s with "Blumenthal" Key localization'
+                ), Html::tag('a', [
+                    'href' => 'https://datatracker.ietf.org/doc/html/draft-blumenthal-aes-usm-04',
+                    'target' => '_blank'
+                ], 'draft-blumenthal-aes-usm-04'))),
+                Html::tag('li', Html::sprintf($this->translate(
+                    'AES-192-C: AES-192 in CFB mode, "Cisco variant", as of %s with "Reeder" Key localization'
+                ), Html::tag('a', [
+                    'href' => 'https://datatracker.ietf.org/doc/html/draft-reeder-snmpv3-usm-3desede-00',
+                    'target' => '_blank'
+                ], 'draft-reeder-snmpv3-usm-3desede-00'))),
+                Html::tag('li', Html::sprintf($this->translate(
+                    'AES-256: CFB mode, as of %s with "Blumenthal" Key localization'
+                ), Html::tag('a', [
+                    'href' => 'https://datatracker.ietf.org/doc/html/draft-blumenthal-aes-usm-04',
+                    'target' => '_blank'
+                ], 'draft-blumenthal-aes-usm-04'))),
+                Html::tag('li', Html::sprintf($this->translate(
+                    'AES-256-C: AES-256 in CFB mode, "Cisco variant", as of %s with "Reeder" Key localization'
+                ), Html::tag('a', [
+                    'href' => 'https://datatracker.ietf.org/doc/html/draft-reeder-snmpv3-usm-3desede-00',
+                    'target' => '_blank'
+                ], 'draft-reeder-snmpv3-usm-3desede-00'))),
+            ]),
+        ]));
         $this->addElement('select', 'priv_protocol', [
             'label'        => $this->translate('Privacy protocol'),
             'required'     => true,
             'multiOptions' => [
                 null  => t('- Please choose -'),
-                'des'    => 'DES (RFC 3826)',
-                '3des'   => '3-DES (Cisco)',
-                'aes128' => 'AES-128 (Cisco, others)',
-                'aes192' => 'AES-192 (Cisco, others)',
-                'aes256' => 'AES-256 (Cisco, others)',
+                'des'     => $this->translate('DES (RFC 3414)'),
+                'des3'    => $this->translate('3-DES (Cisco, others: Reeder draft)'),
+                'aes128'  => $this->translate('AES-128 (RFC 3826)'),
+                'aes192'  => $this->translate('AES-192 (Blumenthal draft, AGENT++, like in RFC 3826)'),
+                'aes192c' => $this->translate('AES-192-C (Cisco, others: Reeder draft)'),
+                'aes256'  => $this->translate('AES-256 (Blumenthal draft, AGENT++, like in RFC 3826)'),
+                'aes256c' => $this->translate('AES-256-C (Cisco, others: Reeder draft)'),
             ],
         ]);
         $this->addElement('password', 'priv_key', [
