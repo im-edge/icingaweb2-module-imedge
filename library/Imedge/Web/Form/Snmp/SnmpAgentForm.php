@@ -86,6 +86,11 @@ class SnmpAgentForm extends UuidObjectForm
         ]);
     }
 
+    protected function getObjectLabel()
+    {
+        return $this->getElementValue('label', $this->getElementValue('ip_address', $this->translate('Agent')));
+    }
+
     public function getDatanodeUuid(): UuidInterface
     {
         return Uuid::fromString($this->getValue('datanode_uuid'));
