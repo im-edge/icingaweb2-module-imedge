@@ -146,7 +146,9 @@ class NodeController extends CompatController
         $form = new RunRemoteMethodForm($methodName, $method);
         $form->on($form::ON_SUCCESS, function (RunRemoteMethodForm $form) use ($methodName, $method) {
             if ($method->type === 'request') {
+                $start = hrtime(true);
                 $result = await($this->client->request($methodName, $form->getNormalizedValues()), Loop::get(), 60);
+                $duration = hrtime(true) - $start;
                 if (is_array($result) || is_object($result)) {
                     // Test:
                     // $result = count((array) $result);
@@ -156,6 +158,7 @@ class NodeController extends CompatController
                 } else {
                     $this->content()->add(Html::tag('pre', JsonString::encode($result, JSON_PRETTY_PRINT)));
                 }
+                $this->content()->add(sprintf($this->translate('Duration: %.02fms'), $duration / 1_000_000));
             } else {
                 $this->content()->add(Html::tag(print_r($method, 1)));
             }
