@@ -419,8 +419,8 @@ class SnmpController extends CompatController
                 ? Html::tag('pre', print_r($result, 1))
                 : new LiveSnmpResult($scenarioName, $result, $this->db())
             );
-        } catch (\Exception $e) {
-            if (str_starts_with($e->getMessage(), 'Unable to connect to unix domain socket')) {
+        } catch (Exception $e) {
+            if (strpos($e->getMessage(), 'Unable to connect to unix domain socket') !== false) {
                 $message = 'IMEdge daemon is not reachable';
             } else {
                 $message = $e->getMessage();
