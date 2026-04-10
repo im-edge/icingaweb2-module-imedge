@@ -2,6 +2,7 @@
 
 namespace Icinga\Module\Imedge\Controllers;
 
+use Exception;
 use gipfl\IcingaWeb2\CompatController;
 use gipfl\IcingaWeb2\Link;
 use gipfl\IcingaWeb2\Url;
@@ -146,24 +147,25 @@ class SnmpController extends CompatController
                     $deviceUuid = $form->getUuid();
                     $client = (new IMEdgeClient())->withTarget($nodeUuid->toString());
                     // TODO: also remote
-                    $client->request('inventory.shipConfigForLocalFeatures');
+                    await($client->request('inventory.shipConfigForLocalFeatures'), Loop::get());
                     await($client->request('snmp.triggerScenario', [
                         'deviceUuid' => $deviceUuid,
                         'name' => 'sysInfo',
+                        'delay' => 1,
                     ]), Loop::get());
                     await($client->request('snmp.triggerScenario', [
                         'deviceUuid' => $deviceUuid,
                         'name' => 'interfaceConfig',
-                        'delay' => 5,
+                        'delay' => 1,
                     ]), Loop::get());
                     await($client->request('snmp.triggerScenario', [
                         'deviceUuid' => $deviceUuid,
                         'name' => 'interfaceStatus',
-                        'delay' => 6,
+                        'delay' => 3,
                     ]), Loop::get());
                     Notification::success('Device has been submitted');
                     $this->redirectNow('imedge/snmp/devices#!imedge/snmp/device?uuid=' . $deviceUuid->toString());
-                } catch (\Exception $exception) {
+                } catch (Exception $exception) {
                     Notification::error($exception->getMessage());
                 }
             });
