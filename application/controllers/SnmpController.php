@@ -80,10 +80,13 @@ class SnmpController extends CompatController
                 'class' => 'icon-plus',
                 'data-base-target' => '_main',
             ]),
+            // TODO:
+            /*
             Link::create($this->translate('Export'), 'imedge/data/export', null, [
                 'class' => 'icon-download',
                 'target' => '_blank',
             ]),
+            */
         ]);
         $table = new SnmpDevicesTable($this->db());
         $form = new NodeFilterForm($this->db());
