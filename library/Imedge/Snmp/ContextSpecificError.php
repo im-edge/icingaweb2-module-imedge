@@ -6,9 +6,9 @@ use InvalidArgumentException;
 
 class ContextSpecificError
 {
-    const NO_SUCH_OBJECT = 'no_such_object';     // 0
-    const NO_SUCH_INSTANCE = 'no_such_instance'; // 1
-    const END_OF_MIB_VIEW = 'end_of_mib_view';   // 2
+    protected const NO_SUCH_OBJECT = 'no_such_object';     // 0
+    protected const NO_SUCH_INSTANCE = 'no_such_instance'; // 1
+    protected const END_OF_MIB_VIEW = 'end_of_mib_view';   // 2
 
     public static function intToName(int $value): string
     {

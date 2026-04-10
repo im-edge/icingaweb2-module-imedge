@@ -58,7 +58,13 @@ class NodeDbStreamTable extends Table
         // $dataNodeHex = Uuid::fromBytes($row->datanode_uuid)->toString();
         return $this::row([
             [
-                $this->prepareDummyQuery($row->action, $row->key, $row->table, $row->keyProperties, (array) $row->value),
+                $this->prepareDummyQuery(
+                    $row->action,
+                    $row->key,
+                    $row->table,
+                    $row->keyProperties,
+                    (array)$row->value
+                ),
                 // sprintf(
                 //     'Source: %s / %s',
                 //     $this->dataNodeMappings[$dataNodeHex] ?? $dataNodeHex,
@@ -70,8 +76,13 @@ class NodeDbStreamTable extends Table
         ]);
     }
 
-    protected function prepareDummyQuery(string $action, string $key, string $table, array $keyProperties, array $values)
-    {
+    protected function prepareDummyQuery(
+        string $action,
+        string $key,
+        string $table,
+        array $keyProperties,
+        array $values
+    ) {
         switch ($action) {
             case 'create':
                 return Html::sprintf('INSERT INTO %s %s', $table, $this->prepareDummyValues($values));

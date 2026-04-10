@@ -33,7 +33,6 @@ class ConfigurationController extends CompatController
             $client = new IMEdgeClient();
             // $client->request()
         } catch (\Exception $e) {
-
         }
         if ($this->hasSchema()) {
             $this->redirectNow('imedge/inventory');

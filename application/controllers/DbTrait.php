@@ -28,7 +28,7 @@ trait DbTrait
         if ($name = $this->getDbResourceName()) {
             $db = $this->getDbAdapter($name);
             $db->getConnection(); // triggers error, in case the connection doesn't work
-            $migrations= new Migrations($db, Module::get('imedge')->getBaseDir() . '/schema');
+            $migrations = new Migrations($db, Module::get('imedge')->getBaseDir() . '/schema');
             if (! $migrations->hasSchema()) {
                 $this->redirectToConfigError('db-missing-schema');
             }
