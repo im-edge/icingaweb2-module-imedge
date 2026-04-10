@@ -3,14 +3,16 @@
 namespace Icinga\Module\Imedge\Web\Table\Snmp;
 
 use gipfl\Web\Table\NameValueTable;
+use IMEdge\Web\Data\Model\SnmpAgent;
 use IMEdge\Web\Data\Model\SnmpSystemInfo;
 
 class SnmpSysInfoDetailTable extends NameValueTable
 {
-    public function __construct(SnmpSystemInfo $info)
+    public function __construct(SnmpSystemInfo $info, SnmpAgent $agent)
     {
         $this->addNameValuePairs([
             'System Name'  => $info->get('system_name'),
+            'IP Address'   => inet_ntop($agent->get('ip_address')),
             'Location'     => $info->get('system_location'),
             'Contact'      => $info->get('system_contact'),
             'Description'  => $info->get('system_description'),

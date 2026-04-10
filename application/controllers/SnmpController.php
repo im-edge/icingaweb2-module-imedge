@@ -188,7 +188,7 @@ class SnmpController extends CompatController
         $this->setAutorefreshInterval($reachability->hasBeenChecked() ? 15 : 2);
         $this->content()->add($reachability);
         if ($info) {
-            $this->content()->add(new SnmpSysInfoDetailTable($info));
+            $this->content()->add(new SnmpSysInfoDetailTable($info, $agent));
         }
         $this->rememberPreferredDeviceUrl();
     }
