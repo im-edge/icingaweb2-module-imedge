@@ -9,7 +9,6 @@ use gipfl\IcingaWeb2\Widget\Tabs;
 use gipfl\Web\Widget\Hint;
 use Icinga\Module\Imedge\Config\Defaults;
 use Icinga\Module\Imedge\Graphing\RrdImageLoader;
-use Icinga\Module\Imedge\NodeControl\TargetShipper;
 use Icinga\Module\Imedge\Web\Cards\SnmpInterfaceCards;
 use Icinga\Module\Imedge\Web\Form\Filter\NodeFilterForm;
 use Icinga\Module\Imedge\Web\Form\Inventory\SnmpCredentialForm;
@@ -141,12 +140,11 @@ class SnmpController extends CompatController
             }
             $form->on($form::ON_SUCCESS, function (SnmpAgentForm $form) {
                 try {
-                    $shipper = new TargetShipper($this->db());
                     $nodeUuid = $form->getDatanodeUuid();
                     $deviceUuid = $form->getUuid();
-                    $shipper->shipCredentials($nodeUuid);
-                    $shipper->shipTargets($nodeUuid);
                     $client = (new IMEdgeClient())->withTarget($nodeUuid->toString());
+                    // TODO: also remote
+                    $client->request('inventory.shipConfigForLocalFeatures');
                     await($client->request('snmp.triggerScenario', [
                         'deviceUuid' => $deviceUuid,
                         'name' => 'sysInfo',
