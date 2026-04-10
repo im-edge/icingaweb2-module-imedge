@@ -5,7 +5,7 @@ namespace Icinga\Module\Imedge\Web\Table\Snmp;
 use gipfl\IcingaWeb2\Icon;
 use gipfl\IcingaWeb2\Link;
 use gipfl\IcingaWeb2\Table\ZfQueryBasedTable;
-use gipfl\ZfDb\Adapter\Adapter;
+use gipfl\ZfDb\Adapter\Pdo\PdoAdapter;
 use Icinga\Module\Imedge\Graphing\RrdImageLoader;
 use Icinga\Module\Imedge\Web\Enrichment\NetworkPortInfo;
 use Icinga\Util\Format;
@@ -40,7 +40,7 @@ class SnmpInterfacesTable extends ZfQueryBasedTable
     protected bool $adminUp = false;
     protected bool $operUp = false;
 
-    public function __construct(Adapter $db, UuidInterface $systemUuid, string $start)
+    public function __construct(PdoAdapter $db, UuidInterface $systemUuid, string $start)
     {
         parent::__construct($db);
         $this->systemUuid = $systemUuid;
