@@ -16,6 +16,8 @@ use Icinga\Module\Imedge\Web\Form\Rpc\LiveSnmpScenarioForm;
 use Icinga\Module\Imedge\Web\Form\Snmp\SnmpAgentForm;
 use Icinga\Module\Imedge\Web\Table\Inventory\CredentialsTable;
 use Icinga\Module\Imedge\Web\Table\Measurement\MeasurementsTable;
+use Icinga\Module\Imedge\Web\Table\Scenario\ScenarioPropertiesTable;
+use Icinga\Module\Imedge\Web\Table\Scenario\ScenariosTable;
 use Icinga\Module\Imedge\Web\Table\Snmp\SnmpDevicesTable;
 use Icinga\Module\Imedge\Web\Table\Snmp\SnmpEntitiesTable;
 use Icinga\Module\Imedge\Web\Table\Snmp\SnmpEntitySensorsTable;
@@ -524,6 +526,41 @@ class SnmpController extends CompatController
         if ($form->hasBeenDeleted()) {
             $this->redirectNow('imedge/snmp/credentials#!__CLOSE__');
         }
+    }
+
+    public function scenariosAction(): void
+    {
+        $this->addTitle($this->translate('Available SNMP Polling Scenarios'));
+        $this->addSingleTab($this->translate('Scenarios'));
+        $form = new NodeFilterForm($this->db());
+        $form->handleRequest($this->getServerRequest());
+        $nodeUuid = $form->getUuid();
+        $this->content()->add($form);
+        if ($nodeUuid === null) {
+            return;
+        }
+
+        $client = (new IMEdgeClient())->withTarget($nodeUuid->toString());
+        $scenarios = await($client->request('snmp.getScenarioDefinitions'));
+        // $this->content()->add(Html::tag('pre', print_r($scenarios, 1)));
+        $this->content()->add(new ScenariosTable((array) $scenarios, $nodeUuid));
+    }
+
+    public function scenarioAction(): void
+    {
+        $nodeUuid = Uuid::fromString($this->params->getRequired('node'));
+        $scenarioUuid = Uuid::fromString($this->params->getRequired('scenario'));
+        $client = (new IMEdgeClient())->withTarget($nodeUuid->toString());
+        $scenarios = (array) await($client->request('snmp.getScenarioDefinitions'));
+        $scenario = $scenarios[$scenarioUuid->toString()] ?? null;
+        if ($scenario === null) {
+            throw new NotFoundError('No such scenario');
+        }
+
+        $this->addTitle(sprintf($this->translate('SNMP Scenario: %s'), $scenario->name));
+        $this->addSingleTab($this->translate('Scenario'));
+        $this->content()->add(new ScenarioPropertiesTable($scenario));
+        $this->content()->add(Html::tag('pre', print_r($scenario, true)));
     }
 
     protected function addDeviceHeader(SnmpAgent $agent, ?SnmpSystemInfo $sysInfo, $title)
