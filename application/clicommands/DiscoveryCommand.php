@@ -2,11 +2,11 @@
 
 namespace Icinga\Module\Imedge\CliCommands;
 
+use Exception;
 use Icinga\Application\Logger;
 use Icinga\Cli\Command;
 use Icinga\Module\Imedge\Controllers\DbTrait;
 use Icinga\Module\Imedge\Discovery\DiscoveryRuleImplementation;
-use Icinga\Module\Imedge\NodeControl\TargetShipper;
 use IMEdge\Config\Settings;
 use IMEdge\Json\JsonString;
 use IMEdge\Web\Rpc\IMEdgeClient;
@@ -61,8 +61,9 @@ class DiscoveryCommand extends Command
         if (! $rule) {
             $this->fail('There is no such rule: ' . $ruleName);
         }
-        $shipper = new TargetShipper($this->db());
-        $shipper->shipCredentials($this->getDataNodeUuid());
+        $client = (new IMEdgeClient())->withTarget($this->getDataNodeUuid()->toString());
+        // TODO: also remote, and pick main node
+        $client->request('inventory.shipConfigForLocalFeatures');
 
         $instance = DiscoveryRuleImplementation::createInstance(
             $rule->implementation,
@@ -126,7 +127,7 @@ class DiscoveryCommand extends Command
                 $result->label
             ));
             return true;
-        } catch (\Exception $e) {
+        } catch (Exception $e) {
             Logger::error(sprintf(
                 'Failed to create new SNMP agent for %s (%s): %s',
                 $result->peer,
