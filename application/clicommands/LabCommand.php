@@ -4,7 +4,6 @@ namespace Icinga\Module\Imedge\CliCommands;
 
 use Icinga\Cli\Command;
 use Icinga\Module\Imedge\Controllers\DbTrait;
-use Icinga\Module\Imedge\NodeControl\TargetShipper;
 use IMEdge\Web\Rpc\IMEdgeClient;
 use Ramsey\Uuid\Uuid;
 use Ramsey\Uuid\UuidInterface;
@@ -17,17 +16,17 @@ class LabCommand extends Command
 
     public function shipcredentialsAction(): void
     {
-        (new TargetShipper($this->db()))->shipCredentials($this->getDataNodeUuid());
+        $this->fail('This action no longer exists, calling it is not necessary');
     }
 
     public function shiptargetsAction(): void
     {
-        (new TargetShipper($this->db()))->shipTargets($this->getDataNodeUuid());
+        $this->fail('This action no longer exists, calling it is not necessary');
     }
 
     public function shipnotargetsAction(): void
     {
-        (new TargetShipper($this->db()))->clearTargets($this->getDataNodeUuid());
+        $this->fail('This action no longer exists');
     }
 
     public function fetchhealthAction(): void
