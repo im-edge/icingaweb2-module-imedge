@@ -112,7 +112,7 @@ class MetricsController extends CompatController
         $cntScheduled = 0;
         if ($summary->cnt_files_lost > 0) {
             $client = (new IMEdgeClient())->withTarget($storeUuid->toString());
-            $cntScheduled = count((array) await($client->request('metricStore.getFiledScheduledForDeletion')));
+            $cntScheduled = count((array) await($client->request('metricStore.getFilesScheduledForDeletion')));
             if ($cntScheduled > 0) {
                 $this->setAutorefreshInterval(2);
             }
