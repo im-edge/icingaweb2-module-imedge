@@ -58,7 +58,7 @@ class NodeDbStreamTable extends Table
         // $dataNodeHex = Uuid::fromBytes($row->datanode_uuid)->toString();
         return $this::row([
             [
-                $this->prepareDummyQuery($row->action, $row->table, $row->keyProperties, (array) $row->value),
+                $this->prepareDummyQuery($row->action, $row->key, $row->table, $row->keyProperties, (array) $row->value),
                 // sprintf(
                 //     'Source: %s / %s',
                 //     $this->dataNodeMappings[$dataNodeHex] ?? $dataNodeHex,
@@ -66,11 +66,11 @@ class NodeDbStreamTable extends Table
                 // ),
                 // Html::tag('br'),
             ],
-            DateFormatter::formatTime($timestamp),
+            [DateFormatter::formatTime($timestamp), Html::tag('br'), $position],
         ]);
     }
 
-    protected function prepareDummyQuery(string $action, string $table, array $keyProperties, array $values)
+    protected function prepareDummyQuery(string $action, string $key, string $table, array $keyProperties, array $values)
     {
         switch ($action) {
             case 'create':
@@ -80,13 +80,13 @@ class NodeDbStreamTable extends Table
                     'UPDATE %s %s %s',
                     $table,
                     $this->prepareDummyValues($this->removeKeyProperties($values, $keyProperties)),
-                    $this->prepareDummyWhere($keyProperties, $values)
+                    $this->prepareDummyWhere($keyProperties, $key, $values)
                 );
             case 'delete':
                 return Html::sprintf(
                     'DELETE %s %s',
                     $table,
-                    $this->prepareDummyWhere($keyProperties, $values)
+                    $this->prepareDummyWhere($keyProperties, $key, $values)
                 );
             default:
                 throw new \RuntimeException("Unexpected DB Stream action: $action");
@@ -102,8 +102,14 @@ class NodeDbStreamTable extends Table
         return $values;
     }
 
-    protected function prepareDummyWhere($keyProperties, $values): string
+    protected function prepareDummyWhere($keyProperties, string $key, $values): string
     {
+        $where = [];
+        $keyParts = explode('/', $key);
+        foreach (array_keys($keyProperties) as $idx => $keyProperty) {
+            $where[$keyProperty] = $keyParts[$idx] ?? '??' . var_export($keyProperties, 1) . var_export($keyParts, 1);
+        }
+        $keyProperties = $where;
         $parts = [];
         foreach ($keyProperties as $key) {
             $parts[] = sprintf('%s = %s', $key, $values[$key] ?? '(missing)');
