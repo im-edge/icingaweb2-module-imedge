@@ -23,8 +23,10 @@ $section->add(N_('Credentials'))
 $section->add(N_('Discovery'))
     ->setUrl('imedge/discovery/jobs')
     ->setPriority(30);
+/*
 $section->add(N_('Monitoring Nodes'))
     ->setUrl('imedge/nodes')
     ->setPriority(40);
+*/
 
 $this->provideJsFile('combined.js');
