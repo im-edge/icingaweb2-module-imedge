@@ -27,9 +27,13 @@ class SeedFileNediStyle extends DiscoveryRuleImplementation
     {
         $seed = $settings->getRequired(self::SETTING_NAME_SEED);
         $lines = [];
-        foreach (preg_split('/\r?\n', $seed, -1, PREG_SPLIT_NO_EMPTY) as $line) {
-            $lines[] = trim($line);
-            // TODO: validate
+        assert(is_string($seed));
+        $separated = preg_split('/\r?\n/', $seed, -1, PREG_SPLIT_NO_EMPTY);
+        if ($separated) {
+            foreach ($separated as $line) {
+                $lines[] = trim($line);
+                // TODO: validate
+            }
         }
 
         $settings->set(self::SETTING_NAME_SEED, $lines);
