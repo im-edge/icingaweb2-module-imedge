@@ -54,6 +54,23 @@ class RrdImageLoader
         return $this->templatesCache[$template] ??= $this->templates->loadDefinition($template);
     }
 
+    public function getClientForFile(UuidInterface $fileUuid): IMEdgeClient
+    {
+        $identifier = $this->infos->getMetricStoreIdentifierForFile($fileUuid);
+        return $this->imEdgeClients[$identifier] ??= (new IMEdgeClient())->withTarget($identifier);
+    }
+
+    public function getClientForFileDevice(UuidInterface $fileUuid): IMEdgeClient
+    {
+        $identifier = $this->infos->getDatanodeIdentifierForFile($fileUuid);
+        return $this->imEdgeClients[$identifier] ??= (new IMEdgeClient())->withTarget($identifier);
+    }
+
+    public function getDeviceUuidForFile(UuidInterface $fileUuid): UuidInterface
+    {
+        return $this->infos->getDeviceUuidForFile($fileUuid);
+    }
+
     protected function getClientForStoreIdentifier(string $identifier): IMEdgeClient
     {
         return $this->imEdgeClients[$identifier] ??= (new IMEdgeClient())->withTarget($identifier);

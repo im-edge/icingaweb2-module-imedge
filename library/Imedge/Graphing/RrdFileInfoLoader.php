@@ -163,6 +163,30 @@ class RrdFileInfoLoader
         return $result;
     }
 
+    public function getMetricStoreIdentifierForFile(UuidInterface $fileUuid): string
+    {
+        $db = $this->db;
+        return Uuid::fromBytes($db->fetchOne(
+            $db->select()->from('rrd_file', 'metric_store_uuid')->where('uuid = ?', $fileUuid->getBytes())
+        ))->toString();
+    }
+
+    public function getDatanodeIdentifierForFile(UuidInterface $fileUuid): string
+    {
+        $db = $this->db;
+        return Uuid::fromBytes($db->fetchOne(
+            $db->select()->from('rrd_file', 'datanode_uuid')->where('uuid = ?', $fileUuid->getBytes())
+        ))->toString();
+    }
+
+    public function getDeviceUuidForFile(UuidInterface $fileUuid): UuidInterface
+    {
+        $db = $this->db;
+        return Uuid::fromBytes($db->fetchOne(
+            $db->select()->from('rrd_file', 'device_uuid')->where('uuid = ?', $fileUuid->getBytes())
+        ));
+    }
+
     protected function fetchRowByUuid($table, UuidInterface $uuid, $uuidColumn = 'uuid')
     {
         $db = $this->db;
