@@ -6,7 +6,7 @@ use gipfl\IcingaWeb2\Icon;
 use gipfl\IcingaWeb2\Link;
 use gipfl\IcingaWeb2\Url;
 use gipfl\Translation\TranslationHelper;
-use gipfl\ZfDb\Adapter\Adapter;
+use gipfl\ZfDb\Adapter\Pdo\PdoAdapter;
 use Icinga\Module\Imedge\Graphing\RrdImageLoader;
 use Icinga\Module\Imedge\Web\Enrichment\NetworkPortInfo;
 use Icinga\Util\Format;
@@ -42,10 +42,10 @@ class SnmpInterfaceCards extends BaseHtmlElement
     protected string $template;
     protected bool $adminUp = false;
     protected bool $operUp = false;
-    protected Adapter $db;
+    protected PdoAdapter $db;
     protected RrdImageLoader $imgLoader;
 
-    public function __construct(Adapter $db, UuidInterface $systemUuid, string $template, string $start)
+    public function __construct(PdoAdapter $db, UuidInterface $systemUuid, string $template, string $start)
     {
         $this->db = $db;
         $this->start = $start;
