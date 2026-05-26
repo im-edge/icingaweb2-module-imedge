@@ -171,12 +171,18 @@ class SnmpController extends CompatController
                         'delay' => 3,
                     ]), Loop::get());
                     Notification::success('Device has been submitted');
-                    $this->redirectNow('imedge/snmp/devices#!imedge/snmp/device?uuid=' . $deviceUuid->toString());
+                    $this->redirectNow('imedge/snmp/devices#!' . Url::fromPath('imedge/snmp/device', [
+                        'uuid' => $deviceUuid->toString()
+                    ]));
                 } catch (Exception $exception) {
                     Notification::error($exception->getMessage());
                 }
             });
             $form->handleRequest($this->getServerRequest());
+            if ($form->hasBeenDeleted()) {
+                $this->redirectNow('imedge/snmp/devices#!__CLOSE__');
+            }
+
             $this->content()->add($form);
             return;
         } else {
