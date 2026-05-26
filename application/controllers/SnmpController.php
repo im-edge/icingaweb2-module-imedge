@@ -153,6 +153,7 @@ class SnmpController extends CompatController
                     $client = (new IMEdgeClient())->withTarget($nodeUuid->toString());
                     // TODO: also remote
                     await($client->request('inventory.shipConfigForLocalFeatures'), Loop::get());
+                    await($client->request('inventory.shipConfigForConnectedPeers'), Loop::get());
                     await($client->request('snmp.triggerScenario', [
                         'deviceUuid' => $deviceUuid,
                         'name' => 'sysInfo',

@@ -62,8 +62,8 @@ class DiscoveryCommand extends Command
             $this->fail('There is no such rule: ' . $ruleName);
         }
         $client = (new IMEdgeClient())->withTarget($this->getDataNodeUuid()->toString());
-        // TODO: also remote, and pick main node
         $client->request('inventory.shipConfigForLocalFeatures');
+        $client->request('inventory.shipConfigForConnectedPeers');
 
         $instance = DiscoveryRuleImplementation::createInstance(
             $rule->implementation,
@@ -108,7 +108,8 @@ class DiscoveryCommand extends Command
                 }
             }
             if ($created > 0) {
-                $shipper->shipTargets($this->getDataNodeUuid());
+                $client->request('inventory.shipConfigForLocalFeatures');
+                $client->request('inventory.shipConfigForConnectedPeers');
             }
         }
     }
