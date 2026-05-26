@@ -164,6 +164,22 @@ class MetricsController extends CompatController
                 $this->translate('All files are still referenced by configured SNMP agents')
             ));
         }
+        // Hidden feature for now, helps with devices creating an endless amount of interfaces
+        if ($this->params->get('action') === 'deleteForDevice') {
+            $client = (new IMEdgeClient())->withTarget($storeUuid->toString());
+            $deviceUuid = Uuid::fromString($this->params->getRequired('device_uuid'));
+            $files = $this->fetchFilesForDevice($storeUuid, $deviceUuid);
+            if (count($files) > 0) {
+                if (await($client->request('metricStore.scheduleForDeletion', [$files]))) {
+                    Notification::success(sprintf(
+                        $this->translate('%d files have been scheduled for deletion'),
+                        count($files)
+                    ));
+                }
+            }
+            $this->redirectNow($this->url()->without(['action', 'device_uuid']));
+        }
+
         $fileCount = $summary->cnt_files;
         if ($cntScheduled > 0) {
             $fileCount .= sprintf(' (%s)', sprintf($this->translate('%d scheduled for deletion'), $cntScheduled));
@@ -192,6 +208,27 @@ class MetricsController extends CompatController
             ->where('rf.metric_store_uuid = ?', $metricStoreUuid->getBytes())
             ->where('rf.device_uuid != ?', $metricStoreUuid->getBytes())
         ->where('sa.agent_uuid IS NULL');
+        $rows = $this->db()->fetchAll($query);
+        foreach ($rows as $row) {
+            $row->uuid = Uuid::fromBytes($row->uuid)->toString();
+            $row->device_uuid = Uuid::fromBytes($row->device_uuid)->toString();
+            $row->tags = (array) JsonString::decode($row->tags);
+        }
+
+        return $rows;
+    }
+
+    protected function fetchFilesForDevice(UuidInterface $metricStoreUuid, UuidInterface $deviceUuid): array
+    {
+        $query = $this->db()->select()->from(['rf' => 'rrd_file'], [
+            'rf.uuid',
+            'rf.device_uuid',
+            'rf.filename',
+            'rf.measurement_name',
+            'rf.instance',
+            'rf.tags',
+        ])->where('rf.metric_store_uuid = ?', $metricStoreUuid->getBytes())
+          ->where('rf.device_uuid = ?', $deviceUuid->getBytes());
         $rows = $this->db()->fetchAll($query);
         foreach ($rows as $row) {
             $row->uuid = Uuid::fromBytes($row->uuid)->toString();
