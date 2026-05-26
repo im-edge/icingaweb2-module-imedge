@@ -7,12 +7,14 @@ use gipfl\IcingaWeb2\CompatController;
 use Icinga\Exception\NotFoundError;
 use Icinga\Module\Imedge\Graphing\RrdDataExporter;
 use Icinga\Module\Imedge\Graphing\RrdImageLoader;
+use Icinga\Module\Imedge\NodeControl\MetricStoreLookup;
 use Icinga\Web\UrlParams;
 use IMEdge\RrdGraphInfo\GraphInfo;
 use IMEdge\RrdGraphInfo\ImageHelper;
 use IMEdge\Web\Grapher\GraphRendering\CommandRenderer;
 use IMEdge\Web\Grapher\GraphRendering\RrdImage;
 use IMEdge\Web\Grapher\Request\ResponseSender;
+use IMEdge\Web\Rpc\IMEdgeClient;
 use Ramsey\Uuid\Uuid;
 use Ramsey\Uuid\UuidInterface;
 use React\EventLoop\Loop;
@@ -181,6 +183,9 @@ class GraphController extends CompatController
                 $info = $info->jsonSerialize();
                 if ($expiration === null) {
                     $info->refresh = true;
+                    $this->triggerLiveRefresh($image);
+                } else {
+                    $info->refresh = false;
                 }
                 $info->description = $image->getDescription()->render();
                 $sender->sendAsJson($info);
@@ -224,6 +229,36 @@ class GraphController extends CompatController
     protected function getHeight(): int
     {
         return (int) $this->params->get('height', 120);
+    }
+
+    protected function wantsLiveRefresh(): bool
+    {
+        return preg_match('/^if_traffic/', $this->params->get('template'))
+            && $this->params->get('end') === 'now'
+            && in_array($this->params->get('start'), [
+                'end-15minute',
+                'end-30minute',
+                'end-1hour',
+                'end-2hour',
+            ]);
+    }
+
+    protected function triggerLiveRefresh(RrdImage $image): void
+    {
+        if ($this->wantsLiveRefresh()) {
+            // TODO: image client is RRD node, not main?!
+            $store = new MetricStoreLookup($this->db());
+            $nodeUuid = $store->getMetricStoreNodeUuid(Uuid::fromString($image->getClient()->getTarget()));
+            $refreshClient = (new IMEdgeClient())->withTarget($nodeUuid->toString());
+
+            $fileUuid = $this->getFirstUuidParameter();
+            $loader = $this->getRrdImageLoader();
+            await($refreshClient->request('snmp.triggerScenario', [
+                'deviceUuid' => $loader->getDeviceUuidForFile($fileUuid),
+                'name'       => 'interfaceTraffic',
+                'delay'      => 1,
+            ]), Loop::get());
+        }
     }
 
     protected function preventZfLayout()
