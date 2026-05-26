@@ -150,10 +150,11 @@ class SnmpController extends CompatController
                 try {
                     $nodeUuid = $form->getDatanodeUuid();
                     $deviceUuid = $form->getUuid();
+                    $localClient = (new IMEdgeClient());
                     $client = (new IMEdgeClient())->withTarget($nodeUuid->toString());
-                    // TODO: also remote
-                    await($client->request('inventory.shipConfigForLocalFeatures'), Loop::get());
-                    await($client->request('inventory.shipConfigForConnectedPeers'), Loop::get());
+                    // TODO: We might want to trigger only the affected node
+                    await($localClient->request('inventory.shipConfigForLocalFeatures'), Loop::get());
+                    await($localClient->request('inventory.shipConfigForConnectedPeers'), Loop::get());
                     await($client->request('snmp.triggerScenario', [
                         'deviceUuid' => $deviceUuid,
                         'name' => 'sysInfo',

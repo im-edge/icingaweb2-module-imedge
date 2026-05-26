@@ -61,6 +61,12 @@ class DiscoveryCommand extends Command
         if (! $rule) {
             $this->fail('There is no such rule: ' . $ruleName);
         }
+
+        // TODO: We might want to trigger only the affected node
+        $localClient = (new IMEdgeClient());
+        $localClient->request('inventory.shipConfigForLocalFeatures');
+        $localClient->request('inventory.shipConfigForConnectedPeers');
+
         $client = (new IMEdgeClient())->withTarget($this->getDataNodeUuid()->toString());
         $client->request('inventory.shipConfigForLocalFeatures');
         $client->request('inventory.shipConfigForConnectedPeers');
