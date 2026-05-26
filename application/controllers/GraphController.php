@@ -4,6 +4,8 @@ namespace Icinga\Module\Imedge\Controllers;
 
 use Exception;
 use gipfl\IcingaWeb2\CompatController;
+use Icinga\Exception\NotFoundError;
+use Icinga\Module\Imedge\Graphing\RrdDataExporter;
 use Icinga\Module\Imedge\Graphing\RrdImageLoader;
 use Icinga\Web\UrlParams;
 use IMEdge\RrdGraphInfo\GraphInfo;
@@ -49,6 +51,67 @@ class GraphController extends CompatController
     public function indexAction()
     {
         $this->sendImg($this->loadImg($this->params));
+    }
+
+    public function dataAction()
+    {
+        $templateName = $this->params->getRequired('template');
+        $image = $this->getRrdImageLoader()->getFileImg($this->getFirstUuidParameter(), $templateName);
+        $image->graph->applyUrlParams($this->params);
+
+        $graph = $image->graph->definition;
+        $command = RrdDataExporter::prepareExportCommand(
+            $graph,
+            $this->getExportsForTemplate($templateName),
+            $image->graph->timeRange->getEpochStart(),
+            $image->graph->timeRange->getEpochEnd(),
+            $this->params->getRequired('graphWidth')
+        );
+        $sender = new ResponseSender($this->getResponse(), $this->getServerRequest());
+        $this->preventZfLayout();
+        $sender->sendAsJson(await($image->getClient()->request('rrd.data', [$command])));
+    }
+
+    protected function getExportsForTemplate(string $templateName): array
+    {
+        $exports = [
+            'if_traffic' => [
+                'ifInBitsMin' => 'bit/s in (min)',
+                'ifInBitsAvg' => 'bit/s in (avg)',
+                'ifInBitsMax' => 'bit/s in (max)',
+                'ifOutBitsMin' => 'bit/s out (min)',
+                'ifOutBitsAvg' => 'bit/s out (avg)',
+                'ifOutBitsMax' => 'bit/s out (max)',
+            ],
+            'if_traffic_simple' => [
+                'ifInBitsMin' => 'bit/s in (min)',
+                'ifInBitsAvg' => 'bit/s in (avg)',
+                'ifInBitsMax' => 'bit/s in (max)',
+                'ifOutBitsMin' => 'bit/s out (min)',
+                'ifOutBitsAvg' => 'bit/s out (avg)',
+                'ifOutBitsMax' => 'bit/s out (max)',
+            ],
+            'if_packets' => [
+                'def_average_ifInUcastPkts' => '/s Unicast packets inbound',
+                // 'def_average_ifInNUcastPkts' => 'packets/s in Non-Unicast',
+                'def_average_ifOutUcastPkts' => '/s Unicast packets outbound',
+                // 'def_average_ifOutNUcastPkts' => 'packets/s out Non-Unicast',
+            ],
+            'if_error' => [
+                'ifInDiscards' => '/s discards inbound',
+                'ifInErrors' => '/s errors inbound',
+                'ifInUnknownProtos' => '/s unknown protocols inbound',
+                'ifOutDiscards' => '/s discards outbound',
+                'ifOutErrors' => '/s errors outbound',
+
+            ]
+        ];
+
+        if (isset($exports[$templateName])) {
+            return $exports[$templateName];
+        }
+
+        throw new NotFoundError("Export for '$templateName' has not been defined");
     }
 
     protected function loadImg(UrlParams $params): RrdImage
