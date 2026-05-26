@@ -43,7 +43,7 @@ class MetricStoreLookup
     public function getMetricStoreNodeUuid(UuidInterface $uuid): UuidInterface
     {
         if ($store = $this->getMetricStore($uuid)) {
-            return $store->nodeUuid;
+            return Uuid::fromString($store->nodeUuid);
         }
 
         throw new \Exception('Unable to talkto referenced node');
