@@ -310,7 +310,7 @@ class SnmpController extends CompatController
         foreach ($db->fetchAll($query) as $row) {
             $entities[$row->entity_index] = Entity::create((array) $row)->setStored();
         }
-        $tree = EntityTree::create($entities);
+        // $tree = EntityTree::create($entities);
 
         $entitySensors = [];
         $query = $db->select()->from(EntitySensor::TABLE)->where('device_uuid = ?', $device->getUuid()->getBytes());
@@ -352,9 +352,9 @@ class SnmpController extends CompatController
             $interfaceStatuses[$entityId][$row->if_index] = NetworkInterfaceStatus::create((array) $row)->setStored();
         }
 
-        $tree->setSensors($entitySensors);
-        $tree->setInterfaces($interfaceConfigs, $interfaceStatuses);
-        $this->content()->add(new EntityTreeRenderer($tree, new RrdImageLoader($db)));
+        // $tree->setSensors($entitySensors);
+        // $tree->setInterfaces($interfaceConfigs, $interfaceStatuses);
+        // $this->content()->add(new EntityTreeRenderer($tree, new RrdImageLoader($db)));
 
         if ($table->count() === 0) {
             $this->content()->add(
