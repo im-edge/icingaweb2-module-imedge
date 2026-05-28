@@ -45,7 +45,10 @@ class GrafanaController extends CompatController
             $row->uuid = Uuid::fromBytes($row->uuid)->toString();
             return $row;
         }, $this->db()->fetchAll(
-            $this->db()->select()->from('snmp_system_info', ['uuid', 'system_name'])->order('system_name')
+            $this->db()->select()
+                ->from(['si' => 'snmp_system_info'], ['uuid', 'system_name' => 'COALESCE(sa.label, si.system_name)'])
+                ->join(['sa'=> 'snmp_agent'], 'sa.agent_uuid = si.uuid', [])
+                ->order('system_name')
         ));
         $this->sendJsonResponse($list);
     }
