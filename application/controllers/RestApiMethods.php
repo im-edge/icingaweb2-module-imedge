@@ -113,7 +113,7 @@ trait RestApiMethods
     {
         $token = null;
         foreach ($this->getServerRequest()->getHeader('Authorization') as $line) {
-            if (preg_match('/^(?:X-Special)?Bearer\s+([A-z0-9-]+)$/', $line, $match)) {
+            if (preg_match('/^(?:X-IMEdge)?Bearer\s+([A-z0-9-]+)$/', $line, $match)) {
                 $token = $match[1];
             }
         }
