@@ -28,8 +28,9 @@ class GraphController extends CompatController
 {
     use WebClientInfo;
     use DbTrait;
+    use RestApiMethods;
 
-    protected $requiresAuthentication = false;
+    protected $requiresAuthentication = true;
     protected ?RrdImageLoader $rrdImageLoader = null;
 
     public function init()
@@ -57,21 +58,22 @@ class GraphController extends CompatController
 
     public function dataAction()
     {
-        $templateName = $this->params->getRequired('template');
-        $image = $this->getRrdImageLoader()->getFileImg($this->getFirstUuidParameter(), $templateName);
-        $image->graph->applyUrlParams($this->params);
-
-        $graph = $image->graph->definition;
-        $command = RrdDataExporter::prepareExportCommand(
-            $graph,
-            $this->getExportsForTemplate($templateName),
-            $image->graph->timeRange->getEpochStart(),
-            $image->graph->timeRange->getEpochEnd(),
-            $this->params->getRequired('graphWidth')
-        );
-        $sender = new ResponseSender($this->getResponse(), $this->getServerRequest());
         $this->preventZfLayout();
-        $sender->sendAsJson(await($image->getClient()->request('rrd.data', [$command])));
+        $this->runForApi(function () {
+            $templateName = $this->params->getRequired('template');
+            $image = $this->getRrdImageLoader()->getFileImg($this->getFirstUuidParameter(), $templateName);
+            $image->graph->applyUrlParams($this->params);
+
+            $graph = $image->graph->definition;
+            $command = RrdDataExporter::prepareExportCommand(
+                $graph,
+                $this->getExportsForTemplate($templateName),
+                $image->graph->timeRange->getEpochStart(),
+                $image->graph->timeRange->getEpochEnd(),
+                $this->params->getRequired('graphWidth')
+            );
+            $this->sendJsonResponse(await($image->getClient()->request('rrd.data', [$command])));
+        });
     }
 
     protected function getExportsForTemplate(string $templateName): array
