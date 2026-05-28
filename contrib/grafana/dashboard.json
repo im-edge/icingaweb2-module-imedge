@@ -663,6 +663,11 @@
               "name": "panel-1"
             },
             "height": 19,
+            "repeat": {
+              "direction": "h",
+              "mode": "variable",
+              "value": "interface"
+            },
             "width": 24,
             "x": 0,
             "y": 0
@@ -676,6 +681,11 @@
               "name": "panel-2"
             },
             "height": 10,
+            "repeat": {
+              "direction": "h",
+              "mode": "variable",
+              "value": "interface"
+            },
             "width": 24,
             "x": 0,
             "y": 19
@@ -711,10 +721,10 @@
       "1d"
     ],
     "fiscalYearStartMonth": 0,
-    "from": "2026-05-24T13:17:27.780Z",
+    "from": "now-24h",
     "hideTimepicker": false,
     "timezone": "browser",
-    "to": "2026-05-26T14:21:43.214Z"
+    "to": "now"
   },
   "title": "SNMP Interfaces",
   "variables": [
@@ -723,8 +733,8 @@
       "spec": {
         "allowCustomValue": true,
         "current": {
-          "text": "ASR-BUKIT",
-          "value": "2cf90260-8b4f-4bf3-9388-db00363b893b"
+          "text": "",
+          "value": ""
         },
         "definition": "",
         "hide": "dontHide",
@@ -770,7 +780,19 @@
         "regex": "",
         "regexApplyTo": "value",
         "skipUrlSync": false,
-        "sort": "disabled"
+        "sort": "disabled",
+        "staticOptions": [
+          {
+            "properties": {
+              "system_name": "",
+              "text": "-",
+              "uuid": "",
+              "value": ""
+            },
+            "text": "-",
+            "value": ""
+          }
+        ]
       }
     },
     {
@@ -778,14 +800,16 @@
       "spec": {
         "allowCustomValue": true,
         "current": {
-          "text": "Te0/0/0",
-          "value": "1"
+          "text": [
+          ],
+          "value": [
+          ]
         },
         "definition": "",
         "hide": "dontHide",
         "includeAll": false,
         "label": "Network Interface",
-        "multi": false,
+        "multi": true,
         "name": "interface",
         "options": [],
         "query": {
