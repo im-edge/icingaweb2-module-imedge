@@ -57,15 +57,19 @@ class GrafanaController extends CompatController
 
     protected function sendInterfaces()
     {
-        $device = Uuid::fromString($this->params->getRequired('device'));
-        $list = $this->db()->fetchAll(
-            $this->db()->select()
-                ->from('snmp_interface_config', ['if_index', 'if_name', 'if_alias', 'if_description'])
-                ->where('system_uuid = ?', $device->getBytes())
-                ->order('if_index')
-        );
-        if (empty($list)) {
-            $list = [];
+        $device = $this->params->get('device');
+        $list = [];
+        if ($device !== '') {
+            $device = Uuid::fromString($device);
+            $list = $this->db()->fetchAll(
+                $this->db()->select()
+                    ->from('snmp_interface_config', ['if_index', 'if_name', 'if_alias', 'if_description'])
+                    ->where('system_uuid = ?', $device->getBytes())
+                    ->order('if_index')
+            );
+            if (empty($list)) {
+                $list = [];
+            }
         }
         $this->sendJsonResponse($list);
     }
@@ -77,8 +81,18 @@ class GrafanaController extends CompatController
 
     protected function sendMetrics()
     {
-        $device = Uuid::fromString($this->params->getRequired('device'));
-        $ifIndex = $this->params->getRequired('ifIndex');
+        $device = $this->params->get('device');
+        if ($device === '') {
+            $this->sendJsonResponse([]);
+            return;
+        }
+
+        $device = Uuid::fromString($device);
+        $ifIndex = $this->params->get('ifIndex');
+        if ($ifIndex === '') {
+            $this->sendJsonResponse([]);
+            return;
+        }
         $metric = $this->params->getRequired('metric');
         $datasources = $this->db()->fetchAll(
             $this->db()->select()
