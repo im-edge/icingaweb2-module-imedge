@@ -60,6 +60,8 @@ class LiveSnmpScenarioForm extends Form
             ],
             'class' => ['autosubmit', 'autofocus'],
         ]);
+        /*
+        // disabled for now
         $this->addElement('select', 'resultType', [
             'options' => [
                 'snmp'   => $this->translate('Show SNMP result'),
@@ -67,5 +69,6 @@ class LiveSnmpScenarioForm extends Form
             ],
             'class' => ['autosubmit'],
         ]);
+        */
     }
 }

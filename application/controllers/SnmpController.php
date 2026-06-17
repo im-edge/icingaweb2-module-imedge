@@ -395,16 +395,16 @@ class SnmpController extends CompatController
     /**
      * @api
      */
-    public function liveAction(): void
+    public function scenarioLabAction(): void
     {
         $agent = $this->requireAgent();
         $device = $this->getDevice();
         if ($device) {
-            $this->deviceTabs($device)->activate('live');
+            $this->deviceTabs($device)->activate('scenarioLab');
         } else {
-            $this->agentTabs($agent)->activate('live');
+            $this->agentTabs($agent)->activate('scenarioLab');
         }
-        $this->addDeviceHeader($agent, $device, $this->translate('Live SNMP Queries'));
+        $this->addDeviceHeader($agent, $device, $this->translate('Poll scenario-related OIDs'));
 
         $form = new LiveSnmpScenarioForm();
         $form->handleRequest($this->getServerRequest());
@@ -415,7 +415,8 @@ class SnmpController extends CompatController
             return;
         }
         $client = (new IMEdgeClient())->withTarget(Uuid::fromBytes($agent->get('datanode_uuid'))->toString());
-        $wantsScenarioObject = $form->getValue('resultType') === 'object';
+        // $wantsScenarioObject = $form->getValue('resultType') === 'object'; // disabled for now
+        $wantsScenarioObject = false;
         $request = $wantsScenarioObject ? 'snmp.scenarioObject' : 'snmp.scenario';
 
         try {
@@ -599,9 +600,9 @@ class SnmpController extends CompatController
             'label' => $this->translate('Device'),
             'url'   => 'imedge/snmp/device',
             'urlParams' => ['uuid' => $uuid]
-        ])->add('live', [
-            'label' => $this->translate('Live'),
-            'url'   => 'imedge/snmp/live',
+        ])->add('scenarioLab', [
+            'label' => $this->translate('Scenario Lab'),
+            'url'   => 'imedge/snmp/scenario-lab',
             'urlParams' => ['uuid' => $uuid]
         ]);
     }
@@ -629,9 +630,9 @@ class SnmpController extends CompatController
             'label' => $this->translate('Measurements'),
             'url'   => 'imedge/snmp/measurements',
             'urlParams' => ['uuid' => $uuid]
-        ])->add('live', [
-            'label' => $this->translate('Live'),
-            'url'   => 'imedge/snmp/live',
+        ])->add('scenarioLab', [
+            'label' => $this->translate('Scenario Lab'),
+            'url'   => 'imedge/snmp/scenario-lab',
             'urlParams' => ['uuid' => $uuid]
         ]);
     }
@@ -704,7 +705,7 @@ class SnmpController extends CompatController
 
         $allowedForNewDevice = [
             'imedge/snmp/device',
-            'imedge/snmp/live',
+            'imedge/snmp/scenario-lab',
         ];
         /*
         $allowedForNewDevice = [];
