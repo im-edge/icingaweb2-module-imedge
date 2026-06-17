@@ -395,16 +395,16 @@ class SnmpController extends CompatController
     /**
      * @api
      */
-    public function scenarioLabAction(): void
+    public function inspectAction(): void
     {
         $agent = $this->requireAgent();
         $device = $this->getDevice();
         if ($device) {
-            $this->deviceTabs($device)->activate('scenarioLab');
+            $this->deviceTabs($device)->activate('inspect');
         } else {
-            $this->agentTabs($agent)->activate('scenarioLab');
+            $this->agentTabs($agent)->activate('inspect');
         }
-        $this->addDeviceHeader($agent, $device, $this->translate('Poll scenario-related OIDs'));
+        $this->addDeviceHeader($agent, $device, $this->translate('Inspect - Query  this device'));
 
         $form = new LiveSnmpScenarioForm();
         $form->handleRequest($this->getServerRequest());
@@ -600,9 +600,9 @@ class SnmpController extends CompatController
             'label' => $this->translate('Device'),
             'url'   => 'imedge/snmp/device',
             'urlParams' => ['uuid' => $uuid]
-        ])->add('scenarioLab', [
-            'label' => $this->translate('Scenario Lab'),
-            'url'   => 'imedge/snmp/scenario-lab',
+        ])->add('inspect', [
+            'label' => $this->translate('Inspect'),
+            'url'   => 'imedge/snmp/inspect',
             'urlParams' => ['uuid' => $uuid]
         ]);
     }
@@ -630,9 +630,9 @@ class SnmpController extends CompatController
             'label' => $this->translate('Measurements'),
             'url'   => 'imedge/snmp/measurements',
             'urlParams' => ['uuid' => $uuid]
-        ])->add('scenarioLab', [
-            'label' => $this->translate('Scenario Lab'),
-            'url'   => 'imedge/snmp/scenario-lab',
+        ])->add('inspect', [
+            'label' => $this->translate('Inspect'),
+            'url'   => 'imedge/snmp/inspect',
             'urlParams' => ['uuid' => $uuid]
         ]);
     }
@@ -705,7 +705,7 @@ class SnmpController extends CompatController
 
         $allowedForNewDevice = [
             'imedge/snmp/device',
-            'imedge/snmp/scenario-lab',
+            'imedge/snmp/inspect',
         ];
         /*
         $allowedForNewDevice = [];
