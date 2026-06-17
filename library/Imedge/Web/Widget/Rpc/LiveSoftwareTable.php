@@ -3,13 +3,22 @@
 namespace Icinga\Module\Imedge\Web\Widget\Rpc;
 
 use gipfl\Translation\TranslationHelper;
+use Icinga\Module\Imedge\Snmp\ResultHelper;
+use Icinga\Module\Imedge\Snmp\VarBind;
 use ipl\Html\Table;
+use stdClass;
 
 class LiveSoftwareTable extends Table
 {
     use TranslationHelper;
 
-    public function __construct($software)
+    const OIDS = array(
+        // swIndex -> table index 1.3.6.1.2.1.25.3.8.1.1
+        '1.3.6.1.2.1.25.6.3.1.2' => 'name',
+        '1.3.6.1.2.1.25.6.3.1.4' => 'type',
+    );
+
+    public function __construct(stdClass $result)
     {
         $this->getHeader()->add(
             $this::row([
@@ -21,8 +30,11 @@ class LiveSoftwareTable extends Table
             ], null, 'th')
         );
 
-        foreach ($software as $row) {
-            $nameString = SnmpValue::getReadableSnmpValue($row->name);
+        $flipped = ResultHelper::flipTable($result->repeaters, self::OIDS);
+
+        foreach ($flipped as $flippedRow) {
+            $nameString = VarBind::fromSerialization($flippedRow->name)->value->getReadableValue();
+            $typeString = VarBind::fromSerialization($flippedRow->type)->value->getReadableValue();
             $parts = explode('_', $nameString);
             $name = array_shift($parts);
             $version = array_shift($parts);
@@ -51,7 +63,7 @@ class LiveSoftwareTable extends Table
                 $epoch,
                 $version,
                 $architecture,
-                $this->getTypeName(SnmpValue::getReadableSnmpValue($row->type)),
+                $this->getTypeName($typeString),
             ]));
         }
     }
