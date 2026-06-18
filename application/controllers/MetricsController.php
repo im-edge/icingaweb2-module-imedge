@@ -30,7 +30,7 @@ class MetricsController extends CompatController
 
     public function indexAction()
     {
-        $this->assertPermission(Permission::ADMIN);
+        $this->assertPermission(Permission::GLOBAL_ADMIN);
         $this->imedgeTabs()->activate('storage');
         $this->addTitle($this->translate('IMEdge Metric Stores'));
         $this->content()->add(Hint::info($this->translate(
@@ -98,7 +98,7 @@ class MetricsController extends CompatController
 
     public function storeAction()
     {
-        $this->assertPermission(Permission::ADMIN);
+        $this->assertPermission(Permission::GLOBAL_ADMIN);
         $metricStoreLookup = new MetricStoreLookup($this->db());
         $this->storeTabs()->activate('store');
         $storeUuid = Uuid::fromString($this->params->getRequired('store'));
@@ -242,7 +242,7 @@ class MetricsController extends CompatController
     public function filesAction()
     {
         $this->storeTabs()->activate('files');
-        $this->assertPermission(Permission::ADMIN);
+        $this->assertPermission(Permission::GLOBAL_ADMIN);
         $metricStoreLookup = new MetricStoreLookup($this->db());
         $storeUuid = Uuid::fromString($this->params->getRequired('store'));
         $this->addTitle(sprintf(

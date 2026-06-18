@@ -4,6 +4,7 @@ namespace Icinga\Module\Imedge\Controllers;
 
 use gipfl\IcingaWeb2\CompatController;
 use gipfl\Web\Widget\Hint;
+use Icinga\Module\Imedge\Auth\Permission;
 use Icinga\Module\Imedge\Web\Form\Configuration\ChooseDbResourceForm;
 use IMEdge\Web\Rpc\IMEdgeClient;
 use ipl\Html\Html;
@@ -49,7 +50,7 @@ class ConfigurationController extends CompatController
     protected function configureDbResource(): void
     {
         $this->addTitle($this->translate('IMEdge Database Configuration'));
-        if (!$this->hasPermission('imedge/admin')) {
+        if (!$this->hasPermission(Permission::GLOBAL_ADMIN)) {
             $this->content()->add(Hint::error('No database resource has been configured yet. Please ask an'
                 . ' Administrator to complete your config'));
             return;

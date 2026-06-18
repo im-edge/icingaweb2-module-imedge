@@ -37,10 +37,10 @@ class IndexController extends CompatController
 
     public function indexAction()
     {
-        $this->assertPermission(Permission::ADMIN);
+        $this->assertPermission(Permission::GLOBAL_ADMIN);
         $this->imedgeTabs()->activate('imedge');
         $this->addTitle(sprintf($this->translate('Welcome to %s!'), Defaults::APPLICATION_NAME));
-        $isAdmin = $this->Auth()->hasPermission('imedge/admin');
+        $isAdmin = $this->Auth()->hasPermission(Permission::GLOBAL_ADMIN); // Useless right now, we are admin only
         $this->content()->add(Html::tag('div', [
             'class' => 'text-content',
             'data-base-target' => '_main',

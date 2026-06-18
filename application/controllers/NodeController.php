@@ -37,7 +37,7 @@ class NodeController extends CompatController
 
     public function init()
     {
-        $this->assertPermission(Permission::ADMIN);
+        $this->assertPermission(Permission::GLOBAL_ADMIN);
         $this->uuid = Uuid::fromString($this->params->getRequired('uuid'));
         $this->client = (new IMEdgeClient())->withTarget($this->uuid->toString());
         try {
