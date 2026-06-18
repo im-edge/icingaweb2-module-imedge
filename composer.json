@@ -42,7 +42,6 @@
         "imedge/web-url-signing": ">=0.1"
     },
     "require-dev": {
-        "clue/block-react": "^1.5",
         "gipfl/data-type": "^0.4.0",
         "gipfl/icingaweb2": "^0.11.0",
         "gipfl/web": "^0.14.0",
