@@ -21,7 +21,7 @@ use Ramsey\Uuid\Uuid;
 use Ramsey\Uuid\UuidInterface;
 use stdClass;
 
-use function Clue\React\Block\await;
+use function Icinga\Module\Imedge\await;
 
 class MetricsController extends CompatController
 {
