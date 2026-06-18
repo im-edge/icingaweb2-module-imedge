@@ -156,16 +156,26 @@ class DiscoveryCommand extends Command
         $defaultLifecycle = Uuid::fromString('7d214595-d096-5032-b7de-7615e4464b40'); // Maintenance
         $defaultEnvironment = Uuid::fromString('b8ac9370-7916-500d-8d5f-49a769f51ad4'); // Production
         if ($lifecycle = $this->params->get('lifecycle')) {
-            $lifecycle = Uuid::fromBytes($db->fetchOne(
+            $binaryLifecycle = $db->fetchOne(
                 $db->select()->from('system_lifecycle', 'uuid')->where('label = ?', $lifecycle)
-            ));
+            );
+            if ($binaryLifecycle) {
+                $lifecycle = Uuid::fromBytes($binaryLifecycle);
+            } else {
+                throw new Exception("There is no '$lifecycle' lifecycle");
+            }
         } else {
             $lifecycle = $defaultLifecycle;
         }
         if ($environment = $this->params->get('environment')) {
-            $environment = Uuid::fromBytes($db->fetchOne(
+            $binaryEnv = $db->fetchOne(
                 $db->select()->from('system_environment', 'uuid')->where('label = ?', $environment)
-            ));
+            );
+            if ($binaryEnv) {
+                $environment = Uuid::fromBytes($binaryEnv);
+            } else {
+                throw new Exception("There is no '$environment' environment");
+            }
         } else {
             $environment = $defaultEnvironment;
         }
