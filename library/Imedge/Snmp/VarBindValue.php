@@ -45,6 +45,9 @@ class VarBindValue
             case 'unsigned32':
                 $value = $any->value;
                 break;
+            case 'counter64':
+                $value = $any->value;
+                break;
             case 'null':
                 $value = null;
                 break;
