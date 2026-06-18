@@ -49,13 +49,14 @@ class WebActions
     public function init()
     {
         $this->groups = [
-            $this->translate('Devices')   => ['snmpDevices', 'networkDevices', 'radioDevices'],
-            $this->translate('Vendors, Models')   => ['vendors', 'deviceModels', 'rackModels'],
-            $this->translate('Sites, Facilities') => ['sites', 'datanodes', 'snmpcredentials'],
-            $this->translate('SNMP Discovery')   => ['snmpDiscoveryRules', 'snmpDiscoveryCandidates'],
-            $this->translate('Insight')           => ['history'],
-            $this->translate('Lookup Tables')       => ['dataSync' /*, 'dataOui', 'dataAs'*/],
-            $this->translate('Remote Access, Integrations')       => ['apitokens'],
+            // $this->translate('Devices')   => ['snmpDevices', 'networkDevices', 'radioDevices'],
+            // $this->translate('Vendors, Models')   => ['vendors', 'deviceModels', 'rackModels'],
+            // $this->translate('Sites, Facilities') => ['sites', 'datanodes', 'snmpcredentials'],
+            // $this->translate('Insight')           => ['history'],
+            // $this->translate('Lookup Tables')       => ['dataSync' /*, 'dataOui', 'dataAs'*/],
+            // $this->translate('Remote Access, Integrations')       => ['apitokens'],
+            $this->translate('Devices')   => ['snmpDevices', 'snmpcredentials'],
+            $this->translate('SNMP Discovery')   => ['snmpDiscoveryRules', 'snmpDiscoveryJobs'],
         ];
         $this->actions = [
             'vendors' => WebAction::create([
@@ -180,6 +181,15 @@ class WebActions
                 'table'   => 'snmp_discovery_rule',
                 'listUrl' => 'imedge/discovery/rules',
                 'icon'    => 'sliders',
+            ]),
+            'snmpDiscoveryJobs' => WebAction::create([
+                'name'        => 'snmpDiscoveryJobs',
+                'singular'    => $this->translate('Discovery Job'),
+                'plural'      => $this->translate('Discovery Jobs'),
+                'description' => $this->translate('Schedule discovery jobs, manage discovered devices'),
+                'table'   => 'snmp_discovery_candidate',
+                'listUrl' => 'imedge/discovery/candidates',
+                'icon'    => 'eye',
             ]),
             'snmpDiscoveryCandidates' => WebAction::create([
                 'name'        => 'snmpDiscoveryCandidates',
