@@ -20,21 +20,6 @@ class IndexController extends CompatController
     use DbTrait;
     use TabsTraitImedge;
 
-    protected function getMainDescription()
-    {
-        return [
-            Html::tag('p', Html::sprintf($this->translate('%s ships a bunch of powerful components for your Open Source
- Monitoring environment. As in Edge Computing best practices, this brings processing
- closer to the data source.'), Html::tag('strong', Defaults::APPLICATION_NAME))),
-            Html::tag('p', Html::sprintf(
-                $this->translate('Currently, this module allows to control local and remote %s nodes,
- is proxying graph requests, and provides access to our %s database.'),
-                Html::tag('strong', Defaults::APPLICATION_NAME),
-                Link::create($this->translate('Inventory'), 'imedge/inventory')
-            ))
-        ];
-    }
-
     public function indexAction()
     {
         $this->assertPermission(Permission::GLOBAL_ADMIN);
@@ -118,6 +103,21 @@ class IndexController extends CompatController
         }
 
         $this->setAutorefreshInterval($refreshInterval);
+    }
+
+    protected function getMainDescription(): array
+    {
+        return [
+            Html::tag('p', Html::sprintf($this->translate('%s ships a bunch of powerful components for your Open Source
+ Monitoring environment. As in Edge Computing best practices, this brings processing
+ closer to the data source.'), Html::tag('strong', Defaults::APPLICATION_NAME))),
+            Html::tag('p', Html::sprintf(
+                $this->translate('Currently, this module allows to control local and remote %s nodes,
+ is proxying graph requests, and provides access to our %s database.'),
+                Html::tag('strong', Defaults::APPLICATION_NAME),
+                Link::create($this->translate('Inventory'), 'imedge/inventory')
+            ))
+        ];
     }
 
     protected function fallbackCheck()
