@@ -66,6 +66,7 @@ class SnmpController extends CompatController
     {
         // Hint: we intentionally do not call our parent's init() method
     }
+
     /**
      * @api
      */
