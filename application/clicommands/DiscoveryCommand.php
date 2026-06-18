@@ -14,6 +14,7 @@ use Ramsey\Uuid\Uuid;
 use Ramsey\Uuid\UuidInterface;
 
 use function Icinga\Module\Imedge\await;
+use function Icinga\Module\Imedge\awaitAll;
 
 class DiscoveryCommand extends Command
 {
@@ -64,12 +65,14 @@ class DiscoveryCommand extends Command
 
         // TODO: We might want to trigger only the affected node
         $localClient = (new IMEdgeClient());
-        $localClient->request('inventory.shipConfigForLocalFeatures');
-        $localClient->request('inventory.shipConfigForConnectedPeers');
 
         $client = (new IMEdgeClient())->withTarget($this->getDataNodeUuid()->toString());
-        $client->request('inventory.shipConfigForLocalFeatures');
-        $client->request('inventory.shipConfigForConnectedPeers');
+        awaitAll([
+            $localClient->request('inventory.shipConfigForLocalFeatures'),
+            $localClient->request('inventory.shipConfigForConnectedPeers'),
+            $client->request('inventory.shipConfigForLocalFeatures'),
+            $client->request('inventory.shipConfigForConnectedPeers'),
+        ]);
 
         $instance = DiscoveryRuleImplementation::createInstance(
             $rule->implementation,
@@ -114,8 +117,10 @@ class DiscoveryCommand extends Command
                 }
             }
             if ($created > 0) {
-                $client->request('inventory.shipConfigForLocalFeatures');
-                $client->request('inventory.shipConfigForConnectedPeers');
+                awaitAll([
+                    $client->request('inventory.shipConfigForLocalFeatures'),
+                    $client->request('inventory.shipConfigForConnectedPeers'),
+                ]);
             }
         }
     }
