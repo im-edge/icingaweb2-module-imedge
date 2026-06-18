@@ -528,15 +528,15 @@ class SnmpController extends CompatController
                 'url'   => 'imedge/snmp/credentials',
             ]);
             $this->addSingleTab('New SNMP credential');
-            $this->linkBack('imedge/snmp/devices');
+            $this->linkBack('imedge/snmp/credentials');
             $this->addTitle($this->translate('Add a new SNMP credential'));
         }
 
         $form = (new SnmpCredentialForm($this->dbStore(), $uuid))
             ->on(SnmpCredentialForm::ON_SUCCESS, function (SnmpCredentialForm $form) {
-                $this->redirectNow(
-                    'imedge/snmp/credentials#!imedge/snmp/credential?uuid=' . $form->getUuid()->toString()
-                );
+                $this->redirectNow('imedge/snmp/credentials#!' . Url::fromPath('imedge/snmp/credential', [
+                        'uuid' => $form->getUuid()->toString()
+                    ]));
             });
         $this->content()->add($form->handleRequest($this->getServerRequest()));
         if ($form->hasBeenDeleted()) {
