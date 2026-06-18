@@ -19,7 +19,7 @@ use Icinga\Application\Benchmark;
 use Ramsey\Uuid\Uuid;
 use Ramsey\Uuid\UuidInterface;
 
-use function Clue\React\Block\await;
+use function Icinga\Module\Imedge\await;
 
 class MeasurementController extends CompatController
 {

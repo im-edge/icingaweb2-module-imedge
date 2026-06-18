@@ -2,14 +2,15 @@
 
 namespace Icinga\Module\Imedge\Web\Widget\Measurement;
 
-use Clue\React\Block;
 use gipfl\Translation\TranslationHelper;
 use gipfl\IcingaWeb2\Link;
 use gipfl\IcingaWeb2\Url;
 use Icinga\Web\Notification;
 use IMEdge\Web\Rpc\IMEdgeClient;
 use ipl\Html\HtmlDocument;
-use React\EventLoop\Loop;
+
+use function Icinga\Module\Imedge\await;
+use function React\Promise\Timer\timeout;
 
 class MeasurementFileActions extends HtmlDocument
 {
@@ -115,6 +116,6 @@ class MeasurementFileActions extends HtmlDocument
         $file = $this->filename;
         $promise = $client->request('rrd.' . $method, ['file' => $file]);
 
-        return Block\await($promise, Loop::get(), 3);
+        return await(timeout($promise, 3));
     }
 }

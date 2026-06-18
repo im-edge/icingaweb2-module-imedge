@@ -24,7 +24,7 @@ use ipl\Html\HtmlElement;
 use Ramsey\Uuid\Uuid;
 use Ramsey\Uuid\UuidInterface;
 
-use function Clue\React\Block\await;
+use function Icinga\Module\Imedge\await;
 
 class DiscoveryController extends CompatController
 {
@@ -276,7 +276,7 @@ class DiscoveryController extends CompatController
         }
         try {
             $client = (new IMEdgeClient())->withTarget(Uuid::fromBytes($candidate->get('datanode_uuid'))->toString());
-            $result = await($client->request('snmp.scenario', [
+            $result = await(timeout($client->request('snmp.scenario', [
                 'credentialUuid' => Uuid::fromBytes($candidate->get('credential_uuid')),
                 'address'        => [
                     'ip'   => inet_ntop($candidate->get('ip_address')),
@@ -284,7 +284,7 @@ class DiscoveryController extends CompatController
                 ],
                 'name'           => $scenarioName,
                 'deviceUuid'     => null,
-            ]), Loop::get(), 30);
+            ]), 30));
             $this->content()->add(new LiveSnmpResult($scenarioName, $result, $this->db()));
         } catch (\Exception $e) {
             $this->content()->add(Hint::error($e->getMessage()));

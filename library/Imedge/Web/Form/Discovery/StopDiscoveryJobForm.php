@@ -9,7 +9,7 @@ use Icinga\Web\Notification;
 use IMEdge\Web\Rpc\IMEdgeClient;
 use Ramsey\Uuid\UuidInterface;
 
-use function Clue\React\Block\await;
+use function Icinga\Module\Imedge\await;
 
 class StopDiscoveryJobForm extends Form
 {

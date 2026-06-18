@@ -21,11 +21,11 @@ use ipl\Html\Html;
 use ipl\Html\Table;
 use Ramsey\Uuid\Uuid;
 use Ramsey\Uuid\UuidInterface;
-use React\EventLoop\Loop;
 use stdClass;
 
-use function Clue\React\Block\await;
-use function Clue\React\Block\awaitAll;
+use function Icinga\Module\Imedge\await;
+use function Icinga\Module\Imedge\awaitAll;
+use function React\Promise\Timer\timeout;
 
 class NodeController extends CompatController
 {
@@ -147,7 +147,7 @@ class NodeController extends CompatController
         $form->on($form::ON_SUCCESS, function (RunRemoteMethodForm $form) use ($methodName, $method) {
             if ($method->type === 'request') {
                 $start = hrtime(true);
-                $result = await($this->client->request($methodName, $form->getNormalizedValues()), Loop::get(), 60);
+                $result = await(timeout($this->client->request($methodName, $form->getNormalizedValues()), 60));
                 $duration = hrtime(true) - $start;
                 if (is_array($result) || is_object($result)) {
                     // Test:
@@ -244,7 +244,7 @@ class NodeController extends CompatController
             $this->client->request('node.getConnections'),
             $this->client->request('node.getSettings'),
             $this->client->request('node.listListeners'),
-        ], Loop::get());
+        ]);
 
         return (object) [
             'identifier'  => $identifier,

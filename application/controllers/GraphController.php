@@ -17,10 +17,9 @@ use IMEdge\Web\Grapher\Request\ResponseSender;
 use IMEdge\Web\Rpc\IMEdgeClient;
 use Ramsey\Uuid\Uuid;
 use Ramsey\Uuid\UuidInterface;
-use React\EventLoop\Loop;
 
+use function Icinga\Module\Imedge\await;
 use function base64_decode;
-use function Clue\React\Block\await;
 use function strpos;
 use function substr;
 

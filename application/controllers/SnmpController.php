@@ -47,9 +47,8 @@ use IMEdge\Web\Rpc\IMEdgeClient;
 use ipl\Html\Html;
 use ipl\Html\HtmlDocument;
 use Ramsey\Uuid\Uuid;
-use React\EventLoop\Loop;
 
-use function Clue\React\Block\await;
+use function Icinga\Module\Imedge\await;
 
 class SnmpController extends CompatController
 {
@@ -154,23 +153,23 @@ class SnmpController extends CompatController
                     $localClient = (new IMEdgeClient());
                     $client = (new IMEdgeClient())->withTarget($nodeUuid->toString());
                     // TODO: We might want to trigger only the affected node
-                    await($localClient->request('inventory.shipConfigForLocalFeatures'), Loop::get());
-                    await($localClient->request('inventory.shipConfigForConnectedPeers'), Loop::get());
+                    await($localClient->request('inventory.shipConfigForLocalFeatures'));
+                    await($localClient->request('inventory.shipConfigForConnectedPeers'));
                     await($client->request('snmp.triggerScenario', [
                         'deviceUuid' => $deviceUuid,
                         'name' => 'sysInfo',
                         'delay' => 1,
-                    ]), Loop::get());
+                    ]));
                     await($client->request('snmp.triggerScenario', [
                         'deviceUuid' => $deviceUuid,
                         'name' => 'interfaceConfig',
                         'delay' => 1,
-                    ]), Loop::get());
+                    ]));
                     await($client->request('snmp.triggerScenario', [
                         'deviceUuid' => $deviceUuid,
                         'name' => 'interfaceStatus',
                         'delay' => 3,
-                    ]), Loop::get());
+                    ]));
                     Notification::success('Device has been submitted');
                     $this->redirectNow('imedge/snmp/devices#!' . Url::fromPath('imedge/snmp/device', [
                         'uuid' => $deviceUuid->toString()
@@ -426,7 +425,7 @@ class SnmpController extends CompatController
                 'address' => inet_ntop($agent->get('ip_address')) . ':' . $agent->get('snmp_port'),
                 'name' => $scenarioName,
                 'deviceUuid' => Uuid::fromBytes($agent->get('agent_uuid')),
-            ]), Loop::get());
+            ]));
 
             $this->content()->add(
                 $wantsScenarioObject

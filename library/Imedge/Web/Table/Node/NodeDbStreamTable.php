@@ -10,9 +10,9 @@ use IMEdge\Web\Rpc\IMEdgeClient;
 use IntlChar;
 use ipl\Html\Html;
 use ipl\Html\Table;
-use React\EventLoop\Loop;
 
-use function Clue\React\Block\await;
+use function Icinga\Module\Imedge\await;
+use function React\Promise\Timer\timeout;
 
 class NodeDbStreamTable extends Table
 {
@@ -27,7 +27,7 @@ class NodeDbStreamTable extends Table
     public function __construct(IMEdgeClient $client, array $dataNodeMappings)
     {
         $this->dateFormatter = new LocalDateFormat();
-        $rows = await($client->request('node.getDbStream', []), Loop::get(), 10);
+        $rows = await(timeout($client->request('node.getDbStream', []), 10));
         $this->dataNodeMappings = $dataNodeMappings;
         foreach ($rows as $position => $row) {
             $this->add($this->renderRow($position, $row));

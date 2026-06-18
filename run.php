@@ -11,6 +11,7 @@ if (StyleSheetExtender::extendIcingaWeb(__DIR__)) {
 }
 
 require_once __DIR__ . '/vendor/autoload.php';
+require_once __DIR__ . '/async-compat.php';
 $this->provideHook('director/ImportSource', NetworkInterfaceImportSource::class);
 $this->provideHook('director/ImportSource', SnmpDeviceImportSource::class);
 $this->provideHook('mibs/SnmpScanTarget');

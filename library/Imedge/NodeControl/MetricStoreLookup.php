@@ -7,7 +7,7 @@ use IMEdge\Web\Rpc\IMEdgeClient;
 use Ramsey\Uuid\Uuid;
 use Ramsey\Uuid\UuidInterface;
 
-use function Clue\React\Block\await;
+use function Icinga\Module\Imedge\await;
 
 /**
  * Required, as we do not have them in our DB

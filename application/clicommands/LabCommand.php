@@ -8,7 +8,7 @@ use IMEdge\Web\Rpc\IMEdgeClient;
 use Ramsey\Uuid\Uuid;
 use Ramsey\Uuid\UuidInterface;
 
-use function Clue\React\Block\await;
+use function Icinga\Module\Imedge\await;
 
 class LabCommand extends Command
 {
@@ -31,7 +31,7 @@ class LabCommand extends Command
 
     public function fetchhealthAction(): void
     {
-        $results = await($this->client()->request('snmp.getKnownTargetsHealth', []), $this->loop);
+        $results = await($this->client()->request('snmp.getKnownTargetsHealth', []));
         foreach ($results as $hexUuid => $result) {
             printf("%s: %s\n", $result->target->address->ip, $result->target->state);
         }

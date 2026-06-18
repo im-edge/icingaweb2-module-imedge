@@ -16,7 +16,7 @@ use IMEdge\Web\Rpc\IMEdgeClient;
 use Ramsey\Uuid\Uuid;
 use RuntimeException;
 
-use function Clue\React\Block\await;
+use function Icinga\Module\Imedge\await;
 
 class GrafanaController extends CompatController
 {
