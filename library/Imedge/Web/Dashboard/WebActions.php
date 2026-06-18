@@ -187,8 +187,7 @@ class WebActions
                 'singular'    => $this->translate('Discovery Job'),
                 'plural'      => $this->translate('Discovery Jobs'),
                 'description' => $this->translate('Schedule discovery jobs, manage discovered devices'),
-                'table'   => 'snmp_discovery_candidate',
-                'listUrl' => 'imedge/discovery/candidates',
+                'listUrl' => 'imedge/discovery/jobs',
                 'icon'    => 'eye',
             ]),
             'snmpDiscoveryCandidates' => WebAction::create([
