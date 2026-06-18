@@ -11,9 +11,9 @@ use Icinga\Module\Imedge\Config\Defaults;
 use Icinga\Module\Imedge\Web\Table\Node\NodesTable;
 use IMEdge\Web\Rpc\IMEdgeClient;
 use ipl\Html\Html;
-use React\EventLoop\Loop;
 
-use function Clue\React\Block\await;
+use function Icinga\Module\Imedge\await;
+use function React\Promise\Timer\timeout;
 
 class IndexController extends CompatController
 {
@@ -56,7 +56,7 @@ class IndexController extends CompatController
         $nodeIdentifier = null;
         if ($client->socketIsWritable()) {
             try {
-                $nodeIdentifier = await($client->request('node.getIdentifier'), Loop::get(), 2);
+                $nodeIdentifier = await(timeout($client->request('node.getIdentifier'), 2));
                 $connectError = null;
             } catch (\Exception $e) {
                 $connectError = sprintf(
@@ -128,7 +128,7 @@ class IndexController extends CompatController
             return;
         }
         try {
-            $identifier = await($client->request('node.getIdentifier'), Loop::get(), 2);
+            $identifier = await(timeout($client->request('node.getIdentifier'), 2));
             $label = $identifier->name === $identifier->fqdn
                 ? $identifier->name
                 : sprintf($this->translate('%s (on %s)'), $identifier->name, $identifier->fqdn);
