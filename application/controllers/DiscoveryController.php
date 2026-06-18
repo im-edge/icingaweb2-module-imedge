@@ -13,45 +13,22 @@ use Icinga\Module\Imedge\Web\Form\Discovery\DropDiscoveryResultsForm;
 use Icinga\Module\Imedge\Web\Form\Discovery\StopDiscoveryJobForm;
 use Icinga\Module\Imedge\Web\Form\Discovery\TriggerDiscoveryForm;
 use Icinga\Module\Imedge\Web\Form\Filter\NodeFilterForm;
-use Icinga\Module\Imedge\Web\Form\Rpc\LiveSnmpScenarioForm;
 use Icinga\Module\Imedge\Web\Form\UuidObjectForm;
 use Icinga\Module\Imedge\Web\Table\Discovery\DiscoverResultsTable;
-use Icinga\Module\Imedge\Web\Table\Discovery\DiscoveryCandidatesTable;
 use Icinga\Module\Imedge\Web\Table\Discovery\DiscoveryJobsTable;
 use Icinga\Module\Imedge\Web\Table\Discovery\DiscoveryRulesTable;
-use Icinga\Module\Imedge\Web\Table\Snmp\SnmpSysInfoDetailTable;
-use Icinga\Module\Imedge\Web\Widget\Rpc\LiveSnmpResult;
-use IMEdge\Web\Data\Model\DiscoveryCandidate;
 use IMEdge\Web\Data\Model\DiscoveryRule;
-use IMEdge\Web\Data\Model\SnmpSystemInfo;
 use IMEdge\Web\Rpc\IMEdgeClient;
 use ipl\Html\Html;
 use ipl\Html\HtmlElement;
 use Ramsey\Uuid\Uuid;
 use Ramsey\Uuid\UuidInterface;
-use React\EventLoop\Loop;
 
 use function Clue\React\Block\await;
 
 class DiscoveryController extends CompatController
 {
     use DbTrait;
-
-    public function candidatesAction()
-    {
-        $this->getListTabs()->activate('candidates');
-        $db = $this->db();
-        $this->addTitle($this->translate('Discovery Candidates'));
-        $form = new NodeFilterForm($db);
-        $form->setAction((string) $this->getOriginalUrl()->without('datanode'));
-        $form->handleRequest($this->getServerRequest());
-        $this->content()->add($form);
-        $table = new DiscoveryCandidatesTable($db);
-        if ($uuid = $form->getUuid()) {
-            $table->getQuery()->where('d.uuid = ?', $uuid->getBytes());
-        }
-        $table->renderTo($this);
-    }
 
     public function rulesAction()
     {
@@ -261,6 +238,22 @@ class DiscoveryController extends CompatController
 
         $form->handleRequest($this->getServerRequest());
     }
+/*
+    public function candidatesAction()
+    {
+        $this->getListTabs()->activate('candidates');
+        $db = $this->db();
+        $this->addTitle($this->translate('Discovery Candidates'));
+        $form = new NodeFilterForm($db);
+        $form->setAction((string) $this->getOriginalUrl()->without('datanode'));
+        $form->handleRequest($this->getServerRequest());
+        $this->content()->add($form);
+        $table = new DiscoveryCandidatesTable($db);
+        if ($uuid = $form->getUuid()) {
+            $table->getQuery()->where('d.uuid = ?', $uuid->getBytes());
+        }
+        $table->renderTo($this);
+    }
 
     public function candidateAction()
     {
@@ -309,18 +302,19 @@ class DiscoveryController extends CompatController
 
         return null;
     }
+    */
 
     protected function getListTabs(): Tabs
     {
         $this->controls()->getAttributes()->add([
             'data-base-target' => '_main'
         ]);
-        return $this->tabs()->add('jobs', [
-            'label' => $this->translate('Current Discovery Jobs'),
-            'url'   => 'imedge/discovery/jobs',
-        ])->add('rules', [
+        return $this->tabs()->add('rules', [
             'label' => $this->translate('Discovery Rules'),
             'url'   => 'imedge/discovery/rules',
+        ])->add('jobs', [
+            'label' => $this->translate('Current Discovery Jobs'),
+            'url'   => 'imedge/discovery/jobs',
         ])/*->add('candidates', [
             'label' => $this->translate('Candidates'),
             'url'   => 'imedge/discovery/candidates',
