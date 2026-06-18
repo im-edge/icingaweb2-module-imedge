@@ -74,7 +74,7 @@ class SnmpController extends CompatController
     {
         $this->setAutorefreshInterval(6);
         $this->addInventoryTab();
-        $this->addSingleTab($this->translate('Devices'));
+        $this->mainTabs()->activate('devices');
         $this->addTitle($this->translate('SNMP Devices'));
         $this->actions()->add([
             Link::create($this->translate('Add'), 'imedge/snmp/device', null, [
@@ -500,7 +500,7 @@ class SnmpController extends CompatController
     public function credentialsAction(): void
     {
         $this->addInventoryTab();
-        $this->addSingleTab($this->translate('Credentials'));
+        $this->mainTabs()->activate('credentials');
         $this->addTitle($this->translate('SNMP credentials'));
         $this->actions()->add(
             Link::create($this->translate('Add'), 'imedge/snmp/credential', null, [
@@ -635,6 +635,17 @@ class SnmpController extends CompatController
             'label' => $this->translate('Inspect'),
             'url'   => 'imedge/snmp/inspect',
             'urlParams' => ['uuid' => $uuid]
+        ]);
+    }
+
+    protected function mainTabs(): Tabs
+    {
+        return $this->tabs()->add('devices', [
+            'label' => $this->translate('SNMP Devices'),
+            'url' => 'imedge/snmp/devices',
+        ])->add('credentials', [
+            'label' => $this->translate('Credentials'),
+            'url' => 'imedge/snmp/credentials',
         ]);
     }
 
