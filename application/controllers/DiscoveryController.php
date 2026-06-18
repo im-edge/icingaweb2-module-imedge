@@ -29,6 +29,7 @@ use function Clue\React\Block\await;
 class DiscoveryController extends CompatController
 {
     use DbTrait;
+    use SpecialActions;
 
     public function rulesAction()
     {
@@ -306,6 +307,7 @@ class DiscoveryController extends CompatController
 
     protected function getListTabs(): Tabs
     {
+        $this->addInventoryTab();
         $this->controls()->getAttributes()->add([
             'data-base-target' => '_main'
         ]);
