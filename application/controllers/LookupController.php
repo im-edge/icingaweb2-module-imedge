@@ -11,6 +11,7 @@ use IMEdge\Web\Select2\BaseSelect2Lookup;
 class LookupController extends CompatController
 {
     use DbTrait;
+    use RestApiMethods;
 
     public function placeAction()
     {
@@ -31,13 +32,6 @@ class LookupController extends CompatController
     {
         /** @var BaseSelect2Lookup $lookup */
         $lookup = new $class($this->db(), $this->params->get('search'), $this->params->get('page'));
-        $this->sendJson($lookup->getResponse());
-    }
-
-    protected function sendJson($body)
-    {
-        header('Content-Type: application/json');
-        echo json_encode($body);
-        exit; // TODO: nice shutdown
+        $this->sendJsonResponse($lookup->getResponse());
     }
 }
