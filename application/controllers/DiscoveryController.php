@@ -312,7 +312,7 @@ class DiscoveryController extends CompatController
 
     protected function getListTabs(): Tabs
     {
-        $this->controls()->addAttributes([
+        $this->controls()->getAttributes()->add([
             'data-base-target' => '_main'
         ]);
         return $this->tabs()->add('jobs', [

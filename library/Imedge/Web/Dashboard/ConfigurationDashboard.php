@@ -23,7 +23,7 @@ class ConfigurationDashboard extends BaseHtmlElement
      */
     protected function assemble(): void
     {
-        $this->addAttributes([
+        $this->getAttributes()->add([
             'class' => 'action-dashboard',
             'data-base-target' => '_main'
         ]);
