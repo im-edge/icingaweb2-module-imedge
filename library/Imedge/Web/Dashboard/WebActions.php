@@ -51,11 +51,11 @@ class WebActions
         $this->groups = [
             // $this->translate('Devices')   => ['snmpDevices', 'networkDevices', 'radioDevices'],
             // $this->translate('Vendors, Models')   => ['vendors', 'deviceModels', 'rackModels'],
-            // $this->translate('Sites, Facilities') => ['sites', 'datanodes', 'snmpcredentials'],
+            // $this->translate('Sites, Facilities') => ['sites', 'datanodes', 'snmpCredentials'],
             // $this->translate('Insight')           => ['history'],
             // $this->translate('Lookup Tables')       => ['dataSync' /*, 'dataOui', 'dataAs'*/],
             // $this->translate('Remote Access, Integrations')       => ['apitokens'],
-            $this->translate('Devices')   => ['snmpDevices', 'snmpcredentials'],
+            $this->translate('Devices')   => ['snmpDevices', 'snmpCredentials'],
             $this->translate('SNMP Discovery')   => ['snmpDiscoveryRules', 'snmpDiscoveryJobs'],
         ];
         $this->actions = [
@@ -150,8 +150,8 @@ class WebActions
                 'url'     => 'imedge/antenna',
                 'icon'    => 'wifi',
             ]),
-            'snmpcredentials' => WebAction::create([
-                'name'        => 'snmpcredentials',
+            'snmpCredentials' => WebAction::create([
+                'name'        => 'snmpCredentials',
                 'singular'    => $this->translate('Credential'),
                 'plural'      => $this->translate('Credentials'),
                 'description' => $this->translate(
