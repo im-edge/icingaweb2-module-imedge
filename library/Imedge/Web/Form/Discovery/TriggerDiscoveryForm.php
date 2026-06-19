@@ -5,6 +5,8 @@ namespace Icinga\Module\Imedge\Web\Form\Discovery;
 use gipfl\Translation\TranslationHelper;
 use gipfl\ZfDb\Adapter\Adapter;
 use gipfl\ZfDbStore\ZfDbStore;
+use Icinga\Authentication\Auth;
+use Icinga\Module\Imedge\Auth\Permission;
 use Icinga\Module\Imedge\Discovery\DiscoveryRuleImplementation;
 use Icinga\Module\Imedge\Web\Form\Form;
 use IMEdge\Web\Rpc\IMEdgeClient;
@@ -49,6 +51,7 @@ class TriggerDiscoveryForm extends Form
         $nodeUuid = $this->getValue('node_uuid');
         if ($nodeUuid && $ruleUuid) {
             $this->ruleForm = $ruleForm = new DiscoveryRuleForm($this->store, Uuid::fromString($ruleUuid));
+            $ruleForm->allowDelete(Auth::getInstance()->hasPermission(Permission::DISCOVERY_RULE_DELETE));
             $ruleForm->handleRequest($this->getRequest()); // Trigger populate etc
             $this->ruleImplementation = $ruleForm->createInstance();
             $this->addElement('submit', 'submit', [

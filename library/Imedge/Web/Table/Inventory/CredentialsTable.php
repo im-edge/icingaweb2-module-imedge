@@ -12,8 +12,9 @@ class CredentialsTable extends ZfQueryBasedTable
         'credential_name',
         'security_name'
     ];
+    protected bool $allowModifications = false;
 
-    public function getColumnsToBeRendered()
+    public function getColumnsToBeRendered(): array
     {
         return array(
             $this->translate('Credential name'),
@@ -26,9 +27,9 @@ class CredentialsTable extends ZfQueryBasedTable
     public function renderRow($row)
     {
         return static::row([
-            Link::create($row->credential_name, 'imedge/snmp/credential', [
+            $this->allowModifications ? Link::create($row->credential_name, 'imedge/snmp/credential', [
                 'uuid' => Uuid::fromBytes($row->credential_uuid)->toString()
-            ]),
+            ]) : $row->credential_name,
             $row->snmp_version,
             $row->security_level !== 'noAuthNoPriv' ? strtoupper($row->auth_protocol) : '-',
             $row->security_level === 'authPriv' ? strtoupper($row->priv_protocol) : '-'
@@ -46,5 +47,11 @@ class CredentialsTable extends ZfQueryBasedTable
                 'auth_protocol',
                 'priv_protocol',
             ])->order('credential_name');
+    }
+
+    public function allowModifications(bool $allow): self
+    {
+        $this->allowModifications = $allow;
+        return $this;
     }
 }

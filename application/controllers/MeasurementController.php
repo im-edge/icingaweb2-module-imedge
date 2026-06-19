@@ -6,6 +6,7 @@ use gipfl\IcingaWeb2\CompatController;
 use gipfl\IcingaWeb2\Link;
 use gipfl\IcingaWeb2\Widget\Tabs;
 use gipfl\Web\Widget\Hint;
+use Icinga\Module\Imedge\Auth\Permission;
 use Icinga\Module\Imedge\Graphing\RrdFileInfoLoader;
 use Icinga\Module\Imedge\Web\Table\Measurement\DsInfoTable;
 use Icinga\Module\Imedge\Web\Table\Measurement\FileInfoTable;
@@ -30,6 +31,7 @@ class MeasurementController extends CompatController
 
     public function init()
     {
+        $this->assertPermission(Permission::GLOBAL_ADMIN);
         $info = $this->requireInfo();
         $client = (new IMEdgeClient())->withTarget($info->getMetricStoreIdentifier());
         $filename = $info->getFilename();

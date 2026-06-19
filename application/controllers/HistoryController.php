@@ -3,6 +3,7 @@
 namespace Icinga\Module\Imedge\Controllers;
 
 use gipfl\IcingaWeb2\CompatController;
+use Icinga\Module\Imedge\Auth\Permission;
 use Icinga\Module\Imedge\Web\Form\Filter\NodeFilterForm;
 use Icinga\Module\Imedge\Web\Table\Node\NodeDbStreamTable;
 use IMEdge\Web\Rpc\IMEdgeClient;
@@ -14,6 +15,7 @@ class HistoryController extends CompatController
 
     public function tableSyncAction()
     {
+        $this->assertPermission(Permission::GLOBAL_ADMIN);
         $this->addSingleTab($this->translate('Table Sync'));
         $this->addTitle($this->translate('Datanode Table Sync History'));
         $form = new NodeFilterForm($this->db());

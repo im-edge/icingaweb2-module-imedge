@@ -7,6 +7,7 @@ use gipfl\IcingaWeb2\Link;
 use gipfl\IcingaWeb2\Url;
 use gipfl\IcingaWeb2\Widget\Tabs;
 use gipfl\Web\Widget\Hint;
+use Icinga\Module\Imedge\Auth\Permission;
 use Icinga\Module\Imedge\Discovery\DiscoveryRuleImplementation;
 use Icinga\Module\Imedge\Web\Form\Discovery\DiscoveryRuleForm;
 use Icinga\Module\Imedge\Web\Form\Discovery\DropDiscoveryResultsForm;
@@ -33,19 +34,23 @@ class DiscoveryController extends CompatController
 
     public function rulesAction()
     {
+        $this->assertPermission(Permission::DISCOVERY_RULE_READ);
         $this->getListTabs()->activate('rules');
         $db = $this->db();
         $this->addTitle($this->translate('Discovery Rules'));
-        $this->actions()->add(Link::create($this->translate('Create'), 'imedge/discovery/rule', null, [
-            'class' => 'icon-plus',
-            'data-base-target' => '_next',
-        ]));
+        if ($this->hasPermission(Permission::DEVICE_WRITE)) {
+            $this->actions()->add(Link::create($this->translate('Create'), 'imedge/discovery/rule', null, [
+                'class' => 'icon-plus',
+                'data-base-target' => '_next',
+            ]));
+        }
         $table = new DiscoveryRulesTable($db);
         $table->renderTo($this);
     }
 
     public function ruleAction()
     {
+        $this->assertPermission(Permission::DISCOVERY_RULE_READ);
         $this->addSingleTab($this->translate('SNMP Discovery Rule'));
         if ($uuid = $this->params->get('uuid')) {
             $uuid = Uuid::fromString($uuid);
@@ -55,6 +60,7 @@ class DiscoveryController extends CompatController
             $rule = DiscoveryRule::load($this->dbStore(), $uuid);
             $this->addTitle($rule->get('label'));
         } else {
+            $this->assertPermission(Permission::DISCOVERY_RULE_WRITE);
             $this->addTitle($this->translate('Create a new Discovery Rule'));
         }
         $this->handleUuidForm($form);

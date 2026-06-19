@@ -3,7 +3,9 @@
 namespace Icinga\Module\Imedge\Web\Dashboard;
 
 use gipfl\Translation\TranslationHelper;
+use Icinga\Authentication\Auth;
 use Icinga\Exception\NotFoundError;
+use Icinga\Module\Imedge\Auth\Permission;
 
 class WebActions
 {
@@ -48,16 +50,32 @@ class WebActions
 
     public function init()
     {
-        $this->groups = [
+        $auth = Auth::getInstance();
+        $this->groups = [];
             // $this->translate('Devices')   => ['snmpDevices', 'networkDevices', 'radioDevices'],
             // $this->translate('Vendors, Models')   => ['vendors', 'deviceModels', 'rackModels'],
             // $this->translate('Sites, Facilities') => ['sites', 'datanodes', 'snmpCredentials'],
             // $this->translate('Insight')           => ['history'],
             // $this->translate('Lookup Tables')       => ['dataSync' /*, 'dataOui', 'dataAs'*/],
             // $this->translate('Remote Access, Integrations')       => ['apitokens'],
-            $this->translate('Devices')   => ['snmpDevices', 'snmpCredentials'],
-            $this->translate('SNMP Discovery')   => ['snmpDiscoveryRules', 'snmpDiscoveryJobs'],
-        ];
+            // $this->translate('Devices')   => ['snmpDevices', 'snmpCredentials'],
+            // $this->translate('SNMP Discovery')   => ['snmpDiscoveryRules', 'snmpDiscoveryJobs'],
+        if ($auth->hasPermission(Permission::DEVICE_READ)) {
+            $this->groups[$this->translate('Devices')] ??= [];
+            $this->groups[$this->translate('Devices')][] = 'snmpDevices';
+        }
+        if ($auth->hasPermission(Permission::CREDENTIALS_READ)) {
+            $this->groups[$this->translate('Devices')] ??= [];
+            $this->groups[$this->translate('Devices')][] = 'snmpCredentials';
+        }
+        if ($auth->hasPermission(Permission::DISCOVERY_RULE_READ)) {
+            $this->groups[$this->translate('SNMP Discovery')] ??= [];
+            $this->groups[$this->translate('SNMP Discovery')][] = 'snmpDiscoveryRules';
+        }
+        if ($auth->hasPermission(Permission::DISCOVERY_JOB_READ)) {
+            $this->groups[$this->translate('SNMP Discovery')] ??= [];
+            $this->groups[$this->translate('SNMP Discovery')][] = 'snmpDiscoveryJobs';
+        }
         $this->actions = [
             'vendors' => WebAction::create([
                 'name'        => 'vendors',

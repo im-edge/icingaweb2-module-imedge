@@ -5,6 +5,7 @@ namespace Icinga\Module\Imedge\Controllers;
 use gipfl\IcingaWeb2\CompatController;
 use gipfl\IcingaWeb2\Link;
 use gipfl\Web\Widget\Hint;
+use Icinga\Module\Imedge\Auth\Permission;
 use Icinga\Module\Imedge\Config\Defaults;
 use Icinga\Module\Imedge\Web\Table\Node\NodesTable;
 use IMEdge\Web\Rpc\IMEdgeClient;
@@ -20,6 +21,7 @@ class NodesController extends CompatController
 
     public function indexAction()
     {
+        $this->assertPermission(Permission::GLOBAL_ADMIN);
         $this->addInventoryTab();
         $this->addSingleTab($this->translate('Monitoring Nodes'));
         $this->addTitle($this->translate('Monitoring Edge Nodes'));

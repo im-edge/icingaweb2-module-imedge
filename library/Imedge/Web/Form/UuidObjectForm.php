@@ -25,6 +25,7 @@ class UuidObjectForm extends Form
 
     /** @var array|string */
     protected $keyProperty;
+    protected bool $allowDelete = false;
 
     public function __construct(ZfDbStore $store, ?UuidInterface $uuid = null)
     {
@@ -40,6 +41,11 @@ class UuidObjectForm extends Form
             $this->instance = new $this->modelClass();
         }
         $this->keyProperty = $this->instance->getKeyProperty();
+    }
+
+    public function allowDelete(bool $allow = true): void
+    {
+        $this->allowDelete = $allow;
     }
 
     public function populate($values)
@@ -63,7 +69,9 @@ class UuidObjectForm extends Form
             $this->addElement('submit', 'submit', [
                 'label' => $this->translate('Store')
             ]);
-            $this->addDeleteButton();
+            if ($this->allowDelete) {
+                $this->addDeleteButton();
+            }
         } else {
             $this->addElement('submit', 'submit', [
                 'label' => $this->translate('Create')

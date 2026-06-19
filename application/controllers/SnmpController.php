@@ -10,6 +10,7 @@ use gipfl\IcingaWeb2\Url;
 use gipfl\IcingaWeb2\Widget\Tabs;
 use gipfl\Web\Widget\Hint;
 use gipfl\ZfDbStore\NotFoundError;
+use Icinga\Module\Imedge\Auth\Permission;
 use Icinga\Module\Imedge\Config\Defaults;
 use Icinga\Module\Imedge\Graphing\RrdImageLoader;
 use Icinga\Module\Imedge\Web\Cards\SnmpInterfaceCards;
@@ -71,6 +72,7 @@ class SnmpController extends CompatController
      */
     public function devicesAction(): void
     {
+        $this->assertPermission(Permission::DEVICE_READ);
         $this->setAutorefreshInterval(6);
         $this->addInventoryTab();
         $this->mainTabs()->activate('devices');
@@ -110,7 +112,9 @@ class SnmpController extends CompatController
      */
     public function deviceAction(): void
     {
+        $this->assertPermission(Permission::DEVICE_READ);
         if ($this->params->get('uuid') === null || $this->params->get('action') === 'modify') {
+            $this->assertPermission(Permission::DEVICE_WRITE);
             if ($this->params->get('uuid')) {
                 $info = $this->getDevice();
                 $agent = $this->requireAgent();
@@ -120,6 +124,7 @@ class SnmpController extends CompatController
                     $this->agentTabs($agent)->activate('device');
                 }
                 $form = new SnmpAgentForm($this->dbStore(), Uuid::fromString($this->params->get('uuid')));
+                $form->allowDelete($this->hasPermission(Permission::DEVICE_DELETE));
                 $agent = $this->requireAgent();
                 $this->addDeviceHeader($agent, $this->getDevice(), $this->translate('Modify SNMP Device'));
                 $this->linkBack($this->url()->without('action'));
@@ -130,6 +135,7 @@ class SnmpController extends CompatController
                     'url'   => 'imedge/snmp/devices',
                 ]);
                 $form = new SnmpAgentForm($this->dbStore(), null);
+                $form->allowDelete($this->hasPermission(Permission::DEVICE_DELETE));
                 if ($nodeUuid = $this->params->get('node')) {
                     $nodeUuid = Uuid::fromString($nodeUuid);
                     $form->populate(['datanode_uuid' => $nodeUuid->toString()]);
@@ -186,12 +192,14 @@ class SnmpController extends CompatController
             $this->content()->add($form);
             return;
         } else {
-            $this->actions()->add(Link::create(
-                $this->translate('Modify'),
-                $this->url()->with('action', 'modify'),
-                null,
-                ['class' => 'icon-edit']
-            ));
+            if ($this->hasPermission(Permission::DEVICE_WRITE)) {
+                $this->actions()->add(Link::create(
+                    $this->translate('Modify'),
+                    $this->url()->with('action', 'modify'),
+                    null,
+                    ['class' => 'icon-edit']
+                ));
+            }
         }
         $info = $this->getDevice();
         $agent = $this->requireAgent();
@@ -215,6 +223,7 @@ class SnmpController extends CompatController
      */
     public function snmpInterfacesAction(): void
     {
+        $this->assertPermission(Permission::DEVICE_READ);
         $this->rememberPreferredDeviceUrl();
         $device = $this->requireDevice();
         $agent = $this->requireAgent();
@@ -295,6 +304,7 @@ class SnmpController extends CompatController
      */
     public function snmpEntitiesAction(): void
     {
+        $this->assertPermission(Permission::DEVICE_READ);
         $device = $this->requireDevice();
         $this->deviceTabs($device)->activate('entities');
         $this->addDeviceHeader($this->requireAgent(), $device, $this->translate('Entities'));
@@ -371,6 +381,7 @@ class SnmpController extends CompatController
      */
     public function snmpSensorsAction(): void
     {
+        $this->assertPermission(Permission::DEVICE_READ);
         $device = $this->requireDevice();
         $agent = $this->requireAgent();
         $this->deviceTabs($device)->activate('sensors');
@@ -382,6 +393,7 @@ class SnmpController extends CompatController
 
     public function measurementsAction()
     {
+        $this->assertPermission(Permission::GLOBAL_ADMIN);
         $agent = $this->requireAgent();
         $device = $this->requireDevice();
         $this->deviceTabs($device)->activate('measurements');
@@ -397,6 +409,7 @@ class SnmpController extends CompatController
      */
     public function inspectAction(): void
     {
+        $this->assertPermission(Permission::DEVICE_READ);
         $agent = $this->requireAgent();
         $device = $this->getDevice();
         if ($device) {
@@ -448,6 +461,7 @@ class SnmpController extends CompatController
      */
     public function snmpInterfaceAction(): void
     {
+        $this->assertPermission(Permission::DEVICE_READ);
         $this->content()->addAttributes([
             'class' => 'imedge-graph-set'
         ]);
@@ -498,6 +512,7 @@ class SnmpController extends CompatController
      */
     public function credentialsAction(): void
     {
+        $this->assertPermission(Permission::CREDENTIALS_READ);
         $this->addInventoryTab();
         $this->mainTabs()->activate('credentials');
         $this->addTitle($this->translate('SNMP credentials'));
@@ -507,7 +522,9 @@ class SnmpController extends CompatController
                 'data-base-target' => '_main'
             ])
         );
-        (new CredentialsTable($this->db()))->renderTo($this);
+        (new CredentialsTable($this->db()))
+            ->allowModifications($this->hasPermission(Permission::CREDENTIALS_WRITE))
+            ->renderTo($this);
     }
 
     /**
@@ -515,6 +532,7 @@ class SnmpController extends CompatController
      */
     public function credentialAction(): void
     {
+        $this->assertPermission(Permission::CREDENTIALS_WRITE);
         $listUrl = 'imedge/snmp/credentials';
         $singleUrl = 'imedge/snmp/credential';
         $uuid = $this->params->get('uuid');
@@ -523,6 +541,7 @@ class SnmpController extends CompatController
             $this->addSingleTab('Modify');
             $this->addTitle($this->translate('Modify SNMP credential'));
         } else {
+            $this->assertPermission(Permission::CREDENTIALS_WRITE);
             $uuid = null;
             $this->addInventoryTab();
             $this->tabs()->add('devices', [
@@ -540,6 +559,7 @@ class SnmpController extends CompatController
                         'uuid' => $form->getUuid()->toString()
                     ]));
             });
+        $form->allowDelete($this->hasPermission(Permission::CREDENTIALS_DELETE));
         $this->content()->add($form->handleRequest($this->getServerRequest()));
         if ($form->hasBeenDeleted()) {
             $this->redirectNow($listUrl . '#!__CLOSE__');
@@ -548,6 +568,7 @@ class SnmpController extends CompatController
 
     public function scenariosAction(): void
     {
+        $this->assertPermission(Permission::GLOBAL_ADMIN);
         $this->addTitle($this->translate('Available SNMP Polling Scenarios'));
         $this->addSingleTab($this->translate('Scenarios'));
         $form = new NodeFilterForm($this->db());
@@ -566,6 +587,7 @@ class SnmpController extends CompatController
 
     public function scenarioAction(): void
     {
+        $this->assertPermission(Permission::GLOBAL_ADMIN);
         $nodeUuid = Uuid::fromString($this->params->getRequired('node'));
         $scenarioUuid = Uuid::fromString($this->params->getRequired('scenario'));
         $client = (new IMEdgeClient())->withTarget($nodeUuid->toString());
@@ -612,7 +634,7 @@ class SnmpController extends CompatController
     protected function deviceTabs(SnmpSystemInfo $info): Tabs
     {
         $uuid = Uuid::fromBytes($info->get('uuid'))->toString();
-        return $this->tabs()->add('device', [
+        $tabs = $this->tabs()->add('device', [
             'label' => $this->translate('Device'),
             'url'   => 'imedge/snmp/device',
             'urlParams' => ['uuid' => $uuid]
@@ -628,15 +650,21 @@ class SnmpController extends CompatController
             'label' => $this->translate('Sensors'),
             'url'   => 'imedge/snmp/snmp-sensors',
             'urlParams' => ['uuid' => $uuid]
-        ])->add('measurements', [ // TODO: device/entity/subject metrics?
-            'label' => $this->translate('Measurements'),
-            'url'   => 'imedge/snmp/measurements',
-            'urlParams' => ['uuid' => $uuid]
-        ])->add('inspect', [
+        ]);
+        if ($this->hasPermission(Permission::GLOBAL_ADMIN)) {
+            $tabs->add('measurements', [ // TODO: device/entity/subject metrics?
+                'label' => $this->translate('Measurements'),
+                'url'   => 'imedge/snmp/measurements',
+                'urlParams' => ['uuid' => $uuid]
+            ]);
+        }
+        $tabs->add('inspect', [
             'label' => $this->translate('Inspect'),
             'url'   => 'imedge/snmp/inspect',
             'urlParams' => ['uuid' => $uuid]
         ]);
+
+        return $tabs;
     }
 
     protected function mainTabs(): Tabs
