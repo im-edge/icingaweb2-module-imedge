@@ -48,7 +48,7 @@ use ipl\Html\Html;
 use ipl\Html\HtmlDocument;
 use Ramsey\Uuid\Uuid;
 
-use function Icinga\Module\Imedge\await;
+use function IMEdge\WebCompat\await;
 
 class SnmpController extends CompatController
 {

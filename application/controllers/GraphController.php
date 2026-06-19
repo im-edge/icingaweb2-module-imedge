@@ -18,7 +18,7 @@ use IMEdge\Web\Rpc\IMEdgeClient;
 use Ramsey\Uuid\Uuid;
 use Ramsey\Uuid\UuidInterface;
 
-use function Icinga\Module\Imedge\await;
+use function IMEdge\WebCompat\await;
 use function base64_decode;
 use function strpos;
 use function substr;

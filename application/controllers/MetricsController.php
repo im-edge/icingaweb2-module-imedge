@@ -21,7 +21,7 @@ use Ramsey\Uuid\Uuid;
 use Ramsey\Uuid\UuidInterface;
 use stdClass;
 
-use function Icinga\Module\Imedge\await;
+use function IMEdge\WebCompat\await;
 
 class MetricsController extends CompatController
 {

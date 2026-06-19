@@ -16,7 +16,7 @@ use IMEdge\Web\Rpc\IMEdgeClient;
 use Ramsey\Uuid\Uuid;
 use RuntimeException;
 
-use function Icinga\Module\Imedge\await;
+use function IMEdge\WebCompat\await;
 
 class GrafanaController extends CompatController
 {

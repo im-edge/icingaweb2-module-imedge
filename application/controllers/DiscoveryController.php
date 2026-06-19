@@ -24,7 +24,7 @@ use ipl\Html\HtmlElement;
 use Ramsey\Uuid\Uuid;
 use Ramsey\Uuid\UuidInterface;
 
-use function Icinga\Module\Imedge\await;
+use function IMEdge\WebCompat\await;
 
 class DiscoveryController extends CompatController
 {

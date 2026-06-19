@@ -19,7 +19,7 @@ use Icinga\Application\Benchmark;
 use Ramsey\Uuid\Uuid;
 use Ramsey\Uuid\UuidInterface;
 
-use function Icinga\Module\Imedge\await;
+use function IMEdge\WebCompat\await;
 
 class MeasurementController extends CompatController
 {

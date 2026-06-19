@@ -9,7 +9,7 @@ use Icinga\Web\Notification;
 use IMEdge\Web\Rpc\IMEdgeClient;
 use ipl\Html\HtmlDocument;
 
-use function Icinga\Module\Imedge\await;
+use function IMEdge\WebCompat\await;
 use function React\Promise\Timer\timeout;
 
 class MeasurementFileActions extends HtmlDocument

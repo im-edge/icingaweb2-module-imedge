@@ -11,7 +11,7 @@ use IntlChar;
 use ipl\Html\Html;
 use ipl\Html\Table;
 
-use function Icinga\Module\Imedge\await;
+use function IMEdge\WebCompat\await;
 use function React\Promise\Timer\timeout;
 
 class NodeDbStreamTable extends Table

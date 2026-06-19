@@ -12,7 +12,7 @@ use Icinga\Module\Imedge\Web\Table\Node\NodesTable;
 use IMEdge\Web\Rpc\IMEdgeClient;
 use ipl\Html\Html;
 
-use function Icinga\Module\Imedge\await;
+use function IMEdge\WebCompat\await;
 use function React\Promise\Timer\timeout;
 
 class IndexController extends CompatController
