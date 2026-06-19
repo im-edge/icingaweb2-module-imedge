@@ -105,9 +105,20 @@ class UuidObjectForm extends Form
             $dd->add([$cancel, $really]);
         }
         if ($this->getSentValue('really_delete') === $labelReally) {
-            $this->store->delete($this->instance);
-            $this->deleted = true;
-            Notification::success(sprintf($this->translate('%s has been deleted'), $this->getObjectLabel()));
+            try {
+                $this->store->delete($this->instance);
+                $this->deleted = true;
+                Notification::success(sprintf($this->translate('"%s" has been deleted'), $this->getObjectLabel()));
+            } catch (\Exception $e) {
+                if (str_contains($e->getMessage(), 'Integrity constraint')) {
+                    Notification::error(sprintf(
+                        $this->translate('Failed to delete "%s", it seems to be still in use'),
+                        $this->getObjectLabel()
+                    ));
+                } else {
+                    Notification::error($e->getMessage());
+                }
+            }
         }
     }
 
@@ -142,7 +153,7 @@ class UuidObjectForm extends Form
         $result = $this->store->store($this->instance);
         if ($result === true) {
             if ($this->isNew) {
-                Notification::success(sprintf($this->translate('%s has been created'), $this->getObjectLabel()));
+                Notification::success(sprintf($this->translate('"%s" has been created'), $this->getObjectLabel()));
             } else {
                 Notification::success(sprintf(
                     $this->translate('%s has been modified'),
