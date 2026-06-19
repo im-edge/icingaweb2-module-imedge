@@ -515,6 +515,8 @@ class SnmpController extends CompatController
      */
     public function credentialAction(): void
     {
+        $listUrl = 'imedge/snmp/credentials';
+        $singleUrl = 'imedge/snmp/credential';
         $uuid = $this->params->get('uuid');
         if ($uuid !== null && strlen($uuid)) {
             $uuid = Uuid::fromString($this->params->get('uuid'));
@@ -525,22 +527,22 @@ class SnmpController extends CompatController
             $this->addInventoryTab();
             $this->tabs()->add('devices', [
                 'label' => $this->translate('Credentials'),
-                'url'   => 'imedge/snmp/credentials',
+                'url'   => $listUrl,
             ]);
             $this->addSingleTab('New SNMP credential');
-            $this->linkBack('imedge/snmp/credentials');
+            $this->linkBack($listUrl);
             $this->addTitle($this->translate('Add a new SNMP credential'));
         }
 
         $form = (new SnmpCredentialForm($this->dbStore(), $uuid))
-            ->on(SnmpCredentialForm::ON_SUCCESS, function (SnmpCredentialForm $form) {
-                $this->redirectNow('imedge/snmp/credentials#!' . Url::fromPath('imedge/snmp/credential', [
+            ->on(SnmpCredentialForm::ON_SUCCESS, function (SnmpCredentialForm $form) use ($listUrl, $singleUrl) {
+                $this->redirectNow($listUrl . '#!' . Url::fromPath($singleUrl, [
                         'uuid' => $form->getUuid()->toString()
                     ]));
             });
         $this->content()->add($form->handleRequest($this->getServerRequest()));
         if ($form->hasBeenDeleted()) {
-            $this->redirectNow('imedge/snmp/credentials#!__CLOSE__');
+            $this->redirectNow($listUrl . '#!__CLOSE__');
         }
     }
 
