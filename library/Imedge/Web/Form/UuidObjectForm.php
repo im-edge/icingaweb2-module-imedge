@@ -34,6 +34,7 @@ class UuidObjectForm extends Form
             assert($instance instanceof UuidObject);
             $this->instance = $instance;
             $this->populate($instance->getProperties());
+            $this->uuid = $uuid;
         } else {
             $this->isNew = true;
             $this->instance = new $this->modelClass();
