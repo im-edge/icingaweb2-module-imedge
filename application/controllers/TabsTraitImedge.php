@@ -15,6 +15,9 @@ trait TabsTraitImedge
         ])->add('storage', [
             'label' => $this->translate('Metric Stores'),
             'url' => 'imedge/metrics'
+        ])->add('tenants', [
+            'label' => $this->translate('Tenants'),
+            'url' => 'imedge/tenants'
         ]);
     }
 }
