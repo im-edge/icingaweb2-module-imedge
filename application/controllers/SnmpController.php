@@ -11,6 +11,7 @@ use gipfl\IcingaWeb2\Widget\Tabs;
 use gipfl\Web\Widget\Hint;
 use Icinga\Exception\NotFoundError;
 use Icinga\Module\Imedge\Auth\Permission;
+use Icinga\Module\Imedge\Auth\TenantRestrictions;
 use Icinga\Module\Imedge\Config\Defaults;
 use Icinga\Module\Imedge\Graphing\RrdImageLoader;
 use Icinga\Module\Imedge\Web\Cards\SnmpInterfaceCards;
@@ -55,6 +56,7 @@ class SnmpController extends CompatController
 {
     use DbTrait;
     use SpecialActions;
+    use TenantTrait;
     use WebClientInfo;
 
     protected const GOT_PREFERRED_URL_PARAM = 'gotPreferredUrl';
@@ -90,7 +92,7 @@ class SnmpController extends CompatController
             ]),
             */
         ]);
-        $table = new SnmpDevicesTable($this->db());
+        $table = new SnmpDevicesTable($this->db(), $this->getTenantUuid());
         $form = new NodeFilterForm($this->db());
         $form->setAction((string) $this->getOriginalUrl()->without('datanode'));
         $form->handleRequest($this->getServerRequest());
@@ -123,7 +125,11 @@ class SnmpController extends CompatController
                 } else {
                     $this->agentTabs($agent)->activate('device');
                 }
-                $form = new SnmpAgentForm($this->dbStore(), Uuid::fromString($this->params->get('uuid')));
+                $form = new SnmpAgentForm(
+                    $this->dbStore(),
+                    Uuid::fromString($this->params->get('uuid')),
+                    $this->getTenantUuid()
+                );
                 $form->allowDelete($this->hasPermission(Permission::DEVICE_DELETE));
                 $agent = $this->requireAgent();
                 $this->addDeviceHeader($agent, $this->getDevice(), $this->translate('Modify SNMP Device'));
@@ -134,7 +140,11 @@ class SnmpController extends CompatController
                     'label' => $this->translate('Devices'),
                     'url'   => 'imedge/snmp/devices',
                 ]);
-                $form = new SnmpAgentForm($this->dbStore(), null);
+                $form = new SnmpAgentForm(
+                    $this->dbStore(),
+                    null,
+                    $this->getTenantUuid()
+                );
                 $form->allowDelete($this->hasPermission(Permission::DEVICE_DELETE));
                 if ($nodeUuid = $this->params->get('node')) {
                     $nodeUuid = Uuid::fromString($nodeUuid);
@@ -516,12 +526,14 @@ class SnmpController extends CompatController
         $this->addInventoryTab();
         $this->mainTabs()->activate('credentials');
         $this->addTitle($this->translate('SNMP credentials'));
-        $this->actions()->add(
-            Link::create($this->translate('Add'), 'imedge/snmp/credential', null, [
-                'class' => 'icon-plus',
-                'data-base-target' => '_main'
-            ])
-        );
+        if ($this->hasPermission(Permission::CREDENTIALS_WRITE)) {
+            $this->actions()->add(
+                Link::create($this->translate('Add'), 'imedge/snmp/credential', null, [
+                    'class' => 'icon-plus',
+                    'data-base-target' => '_main'
+                ])
+            );
+        }
         (new CredentialsTable($this->db()))
             ->allowModifications($this->hasPermission(Permission::CREDENTIALS_WRITE))
             ->renderTo($this);
@@ -769,8 +781,12 @@ class SnmpController extends CompatController
 
     protected function requireAgent(string $param = 'uuid'): SnmpAgent
     {
+        if ($this->agent !== null) {
+            return $this->agent;
+        }
+
         try {
-            return $this->agent ??= SnmpAgent::load(
+            $agent = SnmpAgent::load(
                 $this->dbStore(),
                 Uuid::fromString($this->params->getRequired($param))->getBytes()
             );
@@ -778,5 +794,11 @@ class SnmpController extends CompatController
             $this->checkSchema();
             throw $e;
         }
+
+        if (! TenantRestrictions::allows($agent)) {
+            throw new NotFoundError('Not found');
+        }
+
+        return $this->agent = $agent;
     }
 }
