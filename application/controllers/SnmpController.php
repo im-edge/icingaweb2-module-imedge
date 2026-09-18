@@ -59,8 +59,8 @@ class SnmpController extends CompatController
 
     protected const GOT_PREFERRED_URL_PARAM = 'gotPreferredUrl';
 
-    protected SnmpSystemInfo $sysInfo;
-    protected SnmpAgent $agent;
+    protected ?SnmpSystemInfo $sysInfo = null;
+    protected ?SnmpAgent $agent = null;
 
     public function init()
     {
