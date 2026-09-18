@@ -12,7 +12,7 @@ $this->providePermission(
 $this->providePermission(Permission::CREDENTIALS_ALL, $this->translate('Full access to credentials'));
 $this->providePermission(Permission::CREDENTIALS_READ, $this->translate('List configured credentials'));
 $this->providePermission(Permission::CREDENTIALS_WRITE, $this->translate('Create and modify credentials'));
-$this->providePermission( Permission::CREDENTIALS_DELETE, $this->translate('Delete credentials'));
+$this->providePermission(Permission::CREDENTIALS_DELETE, $this->translate('Delete credentials'));
 $this->providePermission(Permission::DEVICE_ALL, $this->translate('Full access to devices'));
 $this->providePermission(Permission::DEVICE_READ, $this->translate('Show configured devices and related details'));
 $this->providePermission(Permission::DEVICE_WRITE, $this->translate('Create and modify devices'));
