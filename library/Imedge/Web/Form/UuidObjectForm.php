@@ -4,7 +4,11 @@ namespace Icinga\Module\Imedge\Web\Form;
 
 use gipfl\Translation\TranslationHelper;
 use gipfl\Web\Form;
+use gipfl\ZfDbStore\NotFoundError;
 use gipfl\ZfDbStore\ZfDbStore;
+use Icinga\Authentication\Auth;
+use Icinga\Module\Imedge\Auth\Permission;
+use Icinga\Module\Imedge\Auth\TenantRestrictions;
 use Icinga\Web\Notification;
 use IMEdge\Web\Data\Model\UuidObject;
 use ipl\Html\FormElement\SubmitElement;
@@ -26,13 +30,20 @@ class UuidObjectForm extends Form
     /** @var array|string */
     protected $keyProperty;
     protected bool $allowDelete = false;
+    protected ?UuidInterface $tenantUuid;
 
-    public function __construct(ZfDbStore $store, ?UuidInterface $uuid = null)
+    public function __construct(ZfDbStore $store, ?UuidInterface $uuid = null, ?UuidInterface $tenantUuid = null)
     {
+        $this->tenantUuid = $tenantUuid;
         $this->store = $store;
         if ($uuid) {
             $instance = $this->store->load($uuid->getBytes(), $this->modelClass);
             assert($instance instanceof UuidObject);
+            if ($this->tenantUuid) {
+                if ($instance->get('tenant_uuid') !== $this->tenantUuid->getBytes()) {
+                    throw new NotFoundError();
+                }
+            }
             $this->instance = $instance;
             $this->populate($instance->getProperties());
             $this->uuid = $uuid;
@@ -169,5 +180,48 @@ class UuidObjectForm extends Form
                 ));
             }
         }
+    }
+
+    protected function addTenantElement(): void
+    {
+        $this->addElement('select', 'tenant_uuid', [
+            'label'    => $this->translate('Tenant'),
+            'options'  => $this->enum('tenant'),
+            'value'    => $this->getDefaultTenantUuidString(),
+            'required' => !Auth::getInstance()->hasPermission(Permission::GLOBAL_ADMIN)
+        ]);
+    }
+
+    protected function getDefaultTenantUuidString(): ?string
+    {
+        $uuid = $this->getDefaultTenantUuid();
+        if ($uuid === null) {
+            return null;
+        }
+
+        return $uuid->toString();
+    }
+
+    protected function getDefaultTenantUuid(): ?UuidInterface
+    {
+        // TODO: pick selected one from session
+        return $this->tenantUuid ?: null;
+    }
+
+    protected function enum($table, $uuidColumn = 'uuid', $labelColumn = 'label'): array
+    {
+        $db = $this->store->getDb();
+        $values = [];
+        $select = $db->select()->from($table, [$uuidColumn, $labelColumn]);
+        if ($table === 'tenant') {
+            $select = TenantRestrictions::applyFilter($select, 'uuid');
+        } elseif (! in_array($table, ['system_lifecycle', 'system_environment'])) {
+            $select = TenantRestrictions::applyFilter($select);
+        }
+        foreach ($db->fetchPairs($select) as $uuid => $label) {
+            $values[Uuid::fromBytes($uuid)->toString()] = $label;
+        }
+
+        return [null => $this->translate('- please choose -')] + $values;
     }
 }
