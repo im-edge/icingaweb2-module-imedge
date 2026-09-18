@@ -4,6 +4,8 @@ namespace Icinga\Module\Imedge\Web\Table\Inventory;
 
 use gipfl\IcingaWeb2\Link;
 use gipfl\IcingaWeb2\Table\ZfQueryBasedTable;
+use gipfl\ZfDb\Select;
+use Icinga\Module\Imedge\Auth\TenantRestrictions;
 use Ramsey\Uuid\Uuid;
 
 class SitesTable extends ZfQueryBasedTable
@@ -40,16 +42,20 @@ class SitesTable extends ZfQueryBasedTable
         ]);
     }
 
-    protected function prepareQuery()
+    protected function prepareQuery(): Select
     {
-        return $this->db()->select()
-            ->from(['s' => 'inventory_site'], [
-                's.uuid',
-                's.site_name',
-                's.address_uuid',
-                'city' => "CONCAT(ia.city_name, ' (', ia.country_code, ')')",
-            ])->join(['ia' => 'inventory_address'], 's.address_uuid = ia.uuid', [])
-            ->limit(20)
-            ->order('ia.country_code')->order('ia.city_name')->order('s.site_name');
+        return TenantRestrictions::applyFilter(
+            $this->db()
+                ->select()
+                ->from(['s' => 'inventory_site'], [
+                    's.uuid',
+                    's.site_name',
+                    's.address_uuid',
+                    'city' => "CONCAT(ia.city_name, ' (', ia.country_code, ')')",
+                ])->join(['ia' => 'inventory_address'], 's.address_uuid = ia.uuid', [])
+                ->limit(20)
+                ->order('ia.country_code')->order('ia.city_name')->order('s.site_name'),
+            's.tenant_uuid'
+        );
     }
 }

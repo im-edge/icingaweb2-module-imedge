@@ -6,11 +6,14 @@ use gipfl\IcingaWeb2\Icon;
 use gipfl\IcingaWeb2\Link;
 use gipfl\IcingaWeb2\Table\Extension\MultiSelect;
 use gipfl\IcingaWeb2\Table\ZfQueryBasedTable;
+use gipfl\ZfDb\Select;
+use Icinga\Module\Imedge\Auth\TenantRestrictions;
 use IMEdge\Web\Data\Lookup\IpToCountryLiteLookup;
 use IMEdge\Web\Data\Widget\IpAddress;
 use IMEdge\Web\Device\DeviceVendor;
 use ipl\Html\Html;
 use Ramsey\Uuid\Uuid;
+use Ramsey\Uuid\UuidInterface;
 
 class SnmpDevicesTable extends ZfQueryBasedTable
 {
@@ -24,6 +27,13 @@ class SnmpDevicesTable extends ZfQueryBasedTable
 
     // protected DeviceShapeLookup $deviceLookup;
     protected IpToCountryLiteLookup $ipLookup;
+    protected ?UuidInterface $tenantUuid;
+
+    public function __construct($db, ?UuidInterface $tenantUuid)
+    {
+        $this->tenantUuid = $tenantUuid;
+        parent::__construct($db);
+    }
 
     protected function assemble()
     {
@@ -114,27 +124,32 @@ class SnmpDevicesTable extends ZfQueryBasedTable
 | system_engine_max_message_size | int(10) unsigned    | YES  |     | NULL    |       |
 | dot1d_base_bridge_address      | varbinary(6)        | YES  |     | NULL    |       |
 */
-    public function prepareQuery()
+    public function prepareQuery(): Select
     {
-        return $this->db()->select()
-            ->from(['si' => 'snmp_system_info'], [
-                'state'              => 'th.state',
-                'uuid'               => 'sa.agent_uuid',
-                'label'              => 'COALESCE(sa.label, si.system_name)',
-                'system_name'        => 'si.system_name',
-                'system_description' => 'si.system_description',
-                'system_contact'     => 'si.system_contact',
-                'system_location'    => 'si.system_location',
-                'system_oid'         => 'si.system_oid',
-                'ip_address'         => 'sa.ip_address',
-                'snmp_port'          => 'sa.snmp_port',
-            ])->joinRight(['sa' => 'snmp_agent'], 'si.uuid = sa.agent_uuid', [])
-            ->joinLeft(
-                ['th' => 'snmp_target_health'],
-                'si.uuid = th.uuid',
-                []
-            )
-            ->limit(15)
-            ->order("COALESCE(si.system_name, 'ZZZZZZZZZZZZ')");
+        return TenantRestrictions::applyFilter(
+            $this->db()
+                ->select()
+                ->from(['si' => 'snmp_system_info'], [
+                    'state'              => 'th.state',
+                    'uuid'               => 'sa.agent_uuid',
+                    'label'              => 'COALESCE(sa.label, si.system_name)',
+                    'system_name'        => 'si.system_name',
+                    'system_description' => 'si.system_description',
+                    'system_contact'     => 'si.system_contact',
+                    'system_location'    => 'si.system_location',
+                    'system_oid'         => 'si.system_oid',
+                    'ip_address'         => 'sa.ip_address',
+                    'snmp_port'          => 'sa.snmp_port',
+                ])->joinRight(['sa' => 'snmp_agent'], 'si.uuid = sa.agent_uuid', [])
+                ->joinLeft(
+                    ['th' => 'snmp_target_health'],
+                    'si.uuid = th.uuid',
+                    []
+                )
+                ->limit(15)
+                ->order("COALESCE(si.system_name, 'ZZZZZZZZZZZZ')"),
+            'sa.tenant_uuid',
+            $this->tenantUuid
+        );
     }
 }

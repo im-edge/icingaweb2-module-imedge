@@ -4,6 +4,7 @@ namespace Icinga\Module\Imedge\Web\Table\Inventory;
 
 use gipfl\IcingaWeb2\Link;
 use gipfl\IcingaWeb2\Table\ZfQueryBasedTable;
+use Icinga\Module\Imedge\Auth\TenantRestrictions;
 use Ramsey\Uuid\Uuid;
 
 class CredentialsTable extends ZfQueryBasedTable
@@ -38,15 +39,18 @@ class CredentialsTable extends ZfQueryBasedTable
 
     public function prepareQuery()
     {
-        return $this->db()->select()
-            ->from('snmp_credential', [
-                'credential_uuid',
-                'credential_name',
-                'snmp_version',
-                'security_level',
-                'auth_protocol',
-                'priv_protocol',
-            ])->order('credential_name');
+        return TenantRestrictions::applyFilter(
+            $this->db()
+                ->select()
+                ->from('snmp_credential', [
+                    'credential_uuid',
+                    'credential_name',
+                    'snmp_version',
+                    'security_level',
+                    'auth_protocol',
+                    'priv_protocol',
+                ])->order('credential_name')
+        );
     }
 
     public function allowModifications(bool $allow): self
