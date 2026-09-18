@@ -258,7 +258,7 @@ class GraphController extends CompatController
                 'deviceUuid' => $loader->getDeviceUuidForFile($fileUuid),
                 'name'       => 'interfaceTraffic',
                 'delay'      => 1,
-            ]), Loop::get());
+            ]));
         }
     }
 
