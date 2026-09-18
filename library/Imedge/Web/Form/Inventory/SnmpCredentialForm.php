@@ -29,6 +29,7 @@ class SnmpCredentialForm extends UuidObjectForm
             'required' => true,
             'description' => $this->translate('Identifier for this SNMP credential')
         ]);
+        $this->addTenantElement();
         $this->addElement('select', 'snmp_version', [
             'label'        => $this->translate('SNMP Version'),
             'required'     => true,

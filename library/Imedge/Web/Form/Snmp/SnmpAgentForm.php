@@ -59,6 +59,7 @@ class SnmpAgentForm extends UuidObjectForm
             'class'           => 'autosubmit',
             'required'        => true,
         ]));
+        $this->addTenantElement();
         $this->addElement(new SelectRemoteElement('datanode_uuid', [
             'label'           => $this->translate('Datanode'),
             'data-lookup-url' => Url::fromPath('imedge/lookup/node'),
@@ -121,16 +122,5 @@ class SnmpAgentForm extends UuidObjectForm
             $this->store->store($sysInfo);
         }
         */
-    }
-
-    protected function enum($table, $uuidColumn = 'uuid', $labelColumn = 'label'): array
-    {
-        $db = $this->store->getDb();
-        $values = [];
-        foreach ($db->fetchPairs($db->select()->from($table, [$uuidColumn, $labelColumn])) as $uuid => $label) {
-            $values[Uuid::fromBytes($uuid)->toString()] = $label;
-        }
-
-        return [null => $this->translate('- please choose -')] + $values;
     }
 }
